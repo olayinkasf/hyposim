@@ -16,21 +16,18 @@ interface ResultsTableProps {
     desiredMonthlyCost: number;
 }
 
-export const ResultsTable: React.FC<ResultsTableProps> = ({
-                                                              renderData,
-                                                              inputs,
-                                                              handleInputChange,
-                                                              desiredMonthlyCost
-                                                          }) => {
+export const ResultsTable: React.FC<ResultsTableProps> = ({ renderData, inputs, handleInputChange, desiredMonthlyCost }) => {
+    let lineNumber = 0;
+
     return (
-        <TableContainer id="simulation-results" sx={{height: '100%', overflow: 'auto'}}>
-            <Table sx={{minWidth: 650}} aria-label="simulation results table">
+        <TableContainer id="simulation-results" sx={{ height: '100%', overflow: 'auto' }}>
+            <Table sx={{ minWidth: 650 }} size="small" aria-label="simulation results table">
                 <TableBody>
                     {renderData.map((section, sectionIndex) => (
                         <React.Fragment key={sectionIndex}>
                             <MuiTableRow>
                                 <TableCell colSpan={3} sx={{
-                                    bgcolor: '#e6e6e6',
+                                    bgcolor: '#f3f4f6',
                                     textAlign: 'left',
                                     fontWeight: 700,
                                     color: '#374151',
@@ -40,11 +37,18 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
                                     {section.section}
                                 </TableCell>
                             </MuiTableRow>
-                            {section.lines.map((line, lineIndex) => (
-                                <TableRow key={lineIndex} line={line} inputs={inputs}
-                                          handleInputChange={handleInputChange}
-                                          desiredMonthlyCost={desiredMonthlyCost}/>
-                            ))}
+                            {section.lines.map((line, lineIndex) => {
+                                lineNumber++;
+                                return <TableRow
+                                    key={lineIndex}
+                                    lineNumber={lineNumber}
+                                    line={line}
+                                    inputs={inputs}
+                                    handleInputChange={handleInputChange}
+                                    desiredMonthlyCost={desiredMonthlyCost}
+                                    color={line.color}
+                                />
+                            })}
                         </React.Fragment>
                     ))}
                 </TableBody>

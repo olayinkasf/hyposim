@@ -1,7 +1,7 @@
 
 import { useState, useMemo } from 'react';
 import type { SimulationInput } from '../types';
-import { getRenderData } from '../data';
+import { getRenderData } from '../data.tsx';
 
 export const useSimulation = () => {
     const [inputs, setInputs] = useState<SimulationInput>({

@@ -63,8 +63,8 @@ export const AmortizationSchedule: React.FC<AmortizationScheduleProps> = ({ resu
                                     <TableCell component="th" scope="row" sx={{ color: '#4b5563' }}>
                                         {item.month}
                                     </TableCell>
-                                    <TableCell align="right" sx={{ color: '#dc2626' }}>{format(item.interest, 'currency')}</TableCell>
-                                    <TableCell align="right" sx={{ color: '#16a34a' }}>{format(item.principal, 'currency')}</TableCell>
+                                    <TableCell align="right" sx={{ color: '#b91c1c' }}>{format(item.interest, 'currency')}</TableCell>
+                                    <TableCell align="right" sx={{ color: '#15803d' }}>{format(item.principal, 'currency')}</TableCell>
                                     <TableCell align="right" sx={{ fontWeight: 500, color: '#1f2937' }}>{format(item.remainingBalance, 'currency')}</TableCell>
                                 </TableRow>
                             ))}

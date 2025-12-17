@@ -1,4 +1,3 @@
-
 export interface SimulationInput {
     purchasePrice: number;
     renovationBudget: number;
@@ -66,11 +65,10 @@ export interface RenderData {
 }
 
 export interface RenderLine {
-    L: number;
     metric: string;
     value: number;
     format: 'currency' | 'percent' | 'm²' | 'number';
-    calc: string;
+    calc?: string;
     isInput?: boolean;
     stateKey?: keyof SimulationInput;
     isPercent?: boolean;
@@ -79,5 +77,7 @@ export interface RenderLine {
     step?: string;
     isCost?: boolean;
     flow?: boolean;
+    evaluatedDescription?: string;
     evaluatedDisplay?: string;
+    color?: 'highlight' | 'red' | 'green' | 'yellow';
 }
