@@ -1,16 +1,13 @@
-
 import React from 'react';
 import {
     Table,
     TableBody,
     TableCell,
     TableContainer,
-    TableHead,
-    TableRow as MuiTableRow,
-    Paper
+    TableRow as MuiTableRow
 } from '@mui/material';
-import type { RenderData, SimulationInput } from '../types';
-import { TableRow } from './TableRow';
+import type {RenderData, SimulationInput} from '../types';
+import {TableRow} from './TableRow';
 
 interface ResultsTableProps {
     renderData: RenderData[];
@@ -19,23 +16,21 @@ interface ResultsTableProps {
     desiredMonthlyCost: number;
 }
 
-export const ResultsTable: React.FC<ResultsTableProps> = ({ renderData, inputs, handleInputChange, desiredMonthlyCost }) => {
+export const ResultsTable: React.FC<ResultsTableProps> = ({
+                                                              renderData,
+                                                              inputs,
+                                                              handleInputChange,
+                                                              desiredMonthlyCost
+                                                          }) => {
     return (
-        <TableContainer component={Paper} elevation={0} id="simulation-results" sx={{ height: '100%', overflow: 'auto' }}>
-            <Table sx={{ minWidth: 650 }} stickyHeader aria-label="simulation results table">
-                <TableHead sx={{ bgcolor: '#f9fafb' }}>
-                    <MuiTableRow>
-                        <TableCell sx={{ width: '5%', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>L</TableCell>
-                        <TableCell sx={{ width: '65%', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Metric & Details</TableCell>
-                        <TableCell align="right" sx={{ width: '30%', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Value (Edit Here)</TableCell>
-                    </MuiTableRow>
-                </TableHead>
+        <TableContainer id="simulation-results" sx={{height: '100%', overflow: 'auto'}}>
+            <Table sx={{minWidth: 650}} aria-label="simulation results table">
                 <TableBody>
                     {renderData.map((section, sectionIndex) => (
                         <React.Fragment key={sectionIndex}>
                             <MuiTableRow>
                                 <TableCell colSpan={3} sx={{
-                                    bgcolor: '#f3f4f6',
+                                    bgcolor: '#e6e6e6',
                                     textAlign: 'left',
                                     fontWeight: 700,
                                     color: '#374151',
@@ -46,7 +41,9 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({ renderData, inputs, 
                                 </TableCell>
                             </MuiTableRow>
                             {section.lines.map((line, lineIndex) => (
-                                <TableRow key={lineIndex} line={line} inputs={inputs} handleInputChange={handleInputChange} desiredMonthlyCost={desiredMonthlyCost}/>
+                                <TableRow key={lineIndex} line={line} inputs={inputs}
+                                          handleInputChange={handleInputChange}
+                                          desiredMonthlyCost={desiredMonthlyCost}/>
                             ))}
                         </React.Fragment>
                     ))}

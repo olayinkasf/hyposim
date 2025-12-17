@@ -41,7 +41,7 @@ export const EditableValue: React.FC<EditableValueProps> = ({ line, inputs, hand
             alignItems: 'center', // Keep items aligned horizontally
             border: '1px solid rgba(0, 0, 0, 0.23)',
             borderRadius: '4px',
-            width: '12rem',
+            width: '14rem',
             marginLeft: 'auto',
             backgroundColor: line.inputHighlight ? '#fefcbf' : 'transparent',
             '&:hover': {
