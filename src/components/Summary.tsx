@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Box, Card, Typography, CardContent } from '@mui/material';
 import type { SimulationResult, SimulationInput } from '../types';
 import { format } from '../formatters';
 
@@ -13,22 +14,48 @@ export const Summary: React.FC<SummaryProps> = ({ results, inputs }) => {
     const flowLabel = 'Monthly Cost of Ownership';
 
     return (
-        <div id="cost-summary" className="mt-10 p-6 bg-red-50 rounded-xl border-2 border-red-200">
-            <h2 className="text-2xl font-bold text-red-800 mb-4">Cost of Ownership Summary (Monthly)</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-3 bg-white rounded-lg shadow">
-                    <p className="text-sm text-gray-500">Monthly Mortgage Payment</p>
-                    <p className="text-xl font-semibold text-gray-700">{format(results.monthlyMortgagePayment, 'currency')}</p>
-                </div>
-                <div className="p-3 bg-white rounded-lg shadow">
-                    <p className="text-sm text-gray-500">Total Monthly Running Costs (Monthly Hausgeld)</p>
-                    <p className="text-xl font-semibold text-gray-700">{format(inputs.monthlyHausgeldFull, 'currency')}</p>
-                </div>
-                <div className={`p-3 rounded-lg shadow-lg bg-red-200`}>
-                    <p className="text-sm font-bold text-red-800">{flowLabel} (Total Monthly Cost)</p>
-                    <p className="text-2xl font-extrabold text-red-700">{format(actualMonthlyCost, 'currency')}</p>
-                </div>
-            </div>
-        </div>
+        <Box id="cost-summary" sx={{ mt: 5, p: 3, bgcolor: '#fee2e2', borderRadius: 2 }}>
+            <Typography variant="h5" component="h2" sx={{ fontWeight: 700, color: '#991b1b', mb: 2 }}>
+                Cost of Ownership Summary (Monthly)
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 2, flexDirection: { xs: 'column', md: 'row' } }}>
+                <Box sx={{ flex: 1 }}>
+                    <Card elevation={0}>
+                        <CardContent>
+                            <Typography variant="body2" color="text.secondary">
+                                Monthly Mortgage Payment
+                            </Typography>
+                            <Typography variant="h5" component="p" sx={{ fontWeight: 600 }}>
+                                {format(results.monthlyMortgagePayment, 'currency')}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                    <Card elevation={0}>
+                        <CardContent>
+                            <Typography variant="body2" color="text.secondary">
+                                Total Monthly Running Costs (Monthly Hausgeld)
+                            </Typography>
+                            <Typography variant="h5" component="p" sx={{ fontWeight: 600 }}>
+                                {format(inputs.monthlyHausgeldFull, 'currency')}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                    <Card elevation={0} sx={{ bgcolor: '#fecaca' }}>
+                        <CardContent>
+                            <Typography variant="body2" sx={{ fontWeight: 700, color: '#991b1b' }}>
+                                {flowLabel} (Total Monthly Cost)
+                            </Typography>
+                            <Typography variant="h4" component="p" sx={{ fontWeight: 800, color: '#b91c1c' }}>
+                                {format(actualMonthlyCost, 'currency')}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                </Box>
+            </Box>
+        </Box>
     );
 };

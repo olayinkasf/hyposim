@@ -1,4 +1,5 @@
 import React from 'react';
+import { TableRow as MuiTableRow, TableCell, Typography, Box } from '@mui/material';
 import type {RenderLine, SimulationInput} from '../types';
 import {format} from '../formatters';
 import {EditableValue} from './EditableValue';
@@ -12,61 +13,117 @@ interface TableRowProps {
 
 export const TableRow: React.FC<TableRowProps> = ({line, inputs, handleInputChange, desiredMonthlyCost}) => {
     let valueText = '';
-    let rowClasses = line.highlight ? 'bg-blue-50' : '';
-    let valueClasses = 'text-gray-900';
 
     if (!line.isInput) {
         if (line.format === 'currency') valueText = format(line.value, 'currency');
         else if (line.format === 'percent') valueText = format(line.value, 'percent');
         else if (line.format === 'm²') valueText = format(line.value, 'm²');
-        else if (line.L === 34) valueText = `${format(line.value, 'number')} Years`;
+        else if (line.L === 37) valueText = `${format(line.value, 'number')} Years`;
         else valueText = format(line.value, 'number');
     }
 
-    if (line.L === 22) {
-        const isOverBudget = line.value > desiredMonthlyCost;
-        valueClasses = isOverBudget ? 'text-red-800 font-extrabold' : 'text-green-700 font-extrabold';
-        rowClasses = isOverBudget ? 'bg-red-300 border-2 border-red-500' : 'bg-green-100';
-        valueText = format(line.value, 'currency');
-    } else if (line.L === 20 && line.value > 0) {
-        valueClasses = 'text-red-600 font-bold';
-        rowClasses = 'bg-red-50';
-    } else if (line.L === 31) {
-        valueClasses = 'text-red-700 font-extrabold';
-        rowClasses = 'bg-red-100';
-        valueText = format(line.value, 'currency');
-    } else if (line.L === 32) {
-        valueClasses = 'text-green-700 font-extrabold';
-        rowClasses = 'bg-green-100';
-        valueText = format(line.value, 'currency');
-    } else if (line.L === 33) {
-        const isPositive = line.value > 0;
-        valueClasses = isPositive ? 'text-green-700 font-extrabold' : 'text-red-700 font-extrabold';
-        rowClasses = isPositive ? 'bg-green-100' : 'bg-red-100';
+    if (line.L === 25) {
         valueText = format(line.value, 'currency');
     } else if (line.L === 34) {
-        rowClasses = 'bg-yellow-100';
+        valueText = format(line.value, 'currency');
+    } else if (line.L === 35) {
+        valueText = format(line.value, 'currency');
+    } else if (line.L === 36) {
+        valueText = format(line.value, 'currency');
     }
 
     const calcContent = line.calc;
 
+    const getRowStyling = () => {
+        if (line.highlight) {
+            return { bgcolor: '#eff6ff' };
+        }
+        if (line.L === 25) {
+            const isOverBudget = line.value > desiredMonthlyCost;
+            return isOverBudget ?
+                { bgcolor: '#fecaca', border: '2px solid #ef4444' } :
+                { bgcolor: '#dcfce7' };
+        }
+        if (line.L === 23 && line.value > 0) {
+            return { bgcolor: '#fee2e2' };
+        }
+        if (line.L === 34) {
+            return { bgcolor: '#fee2e2' };
+        }
+        if (line.L === 35) {
+            return { bgcolor: '#dcfce7' };
+        }
+        if (line.L === 36) {
+            const isPositive = line.value > 0;
+            return isPositive ?
+                { bgcolor: '#dcfce7' } :
+                { bgcolor: '#fee2e2' };
+        }
+        if (line.L === 37) {
+            return { bgcolor: '#fef9c3' };
+        }
+        return {};
+    }
+
+    const getValueStyling = () => {
+        if (line.L === 25) {
+            const isOverBudget = line.value > desiredMonthlyCost;
+            return isOverBudget ?
+                { color: '#991b1b', fontWeight: 800 } :
+                { color: '#15803d', fontWeight: 800 };
+        }
+        if (line.L === 23 && line.value > 0) {
+            return { color: '#dc2626', fontWeight: 700 };
+        }
+        if (line.L === 34) {
+            return { color: '#b91c1c', fontWeight: 800 };
+        }
+        if (line.L === 35) {
+            return { color: '#16a34a', fontWeight: 800 };
+        }
+        if (line.L === 36) {
+            const isPositive = line.value > 0;
+            return isPositive ?
+                { color: '#16a34a', fontWeight: 800 } :
+                { color: '#b91c1c', fontWeight: 800 };
+        }
+        return {};
+    }
+
     return (
-        <tr className={rowClasses}>
-            <td className="px-3 py-3 whitespace-nowrap text-sm text-gray-500 align-top">{line.L}.</td>
-            <td className="px-6 py-3 text-sm align-top">
-                <div className={`font-medium ${line.highlight ? 'text-gray-900 font-bold' : 'text-gray-800'}`}>
+        <MuiTableRow sx={getRowStyling()}>
+            <TableCell sx={{whiteSpace: 'nowrap', color: '#6b7280'}}>{line.L}.</TableCell>
+            <TableCell>
+                <Typography variant="body2" sx={{ fontWeight: line.highlight ? 700 : 500, color: line.highlight ? '#111827' : 'inherit' }}>
                     {line.metric}
-                </div>
-                <div
-                    className="text-xs text-gray-500 mt-1 font-normal leading-relaxed"
-                    dangerouslySetInnerHTML={{__html: calcContent}}
-                />
-            </td>
-            <td className={`px-6 py-3 whitespace-nowrap text-sm text-right align-top ${valueClasses}`}>
-                {line.isInput && line.stateKey ?
-                    <EditableValue line={{...line, stateKey: line.stateKey}} inputs={inputs}
-                                   handleInputChange={handleInputChange}/> : valueText}
-            </td>
-        </tr>
+                    {calcContent && (
+                        <>
+                            <br/>
+                            <Typography component="span" variant="caption" sx={{ color: '#6b7280' }} dangerouslySetInnerHTML={{__html: calcContent}}/>
+                        </>
+                    )}
+                </Typography>
+            </TableCell>
+            <TableCell align="right" sx={getValueStyling()}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                    {line.isInput && line.stateKey ?
+                        <EditableValue line={{...line, stateKey: line.stateKey}} inputs={inputs}
+                                       handleInputChange={handleInputChange}/> : valueText}
+                    {line.evaluatedDisplay && (
+                        <Box sx={{ display: 'flex', alignItems: 'baseline', marginTop: '4px' }}>
+                            <Typography variant="caption" sx={{ fontSize: '0.75rem', color: 'rgba(0, 0, 0, 0.6)', marginRight: '4px' }}>
+                                =
+                            </Typography>
+                            <Typography variant="body2" sx={{
+                                color: 'inherit',
+                                fontWeight: 500,
+                            }}>
+                                {line.evaluatedDisplay}
+                            </Typography>
+                        </Box>
+                    )}
+                </Box>
+            </TableCell>
+        </MuiTableRow>
     );
 };

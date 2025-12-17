@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Box, Card, Typography, CardContent } from '@mui/material';
 import type { SimulationResult } from '../types';
 import { format } from '../formatters';
 
@@ -9,25 +10,51 @@ interface PaymentBreakdownProps {
 
 export const PaymentBreakdown: React.FC<PaymentBreakdownProps> = ({ results }) => {
     return (
-        <div id="payment-breakdown-summary" className="mt-10 p-6 bg-blue-50 rounded-xl border-2 border-blue-200">
-            <h2 className="text-2xl font-bold text-blue-800 mb-4">First Monthly Mortgage Payment Breakdown</h2>
-            <p className="text-sm text-gray-600 mb-4">
+        <Box id="payment-breakdown-summary" sx={{ mt: 5, p: 3, bgcolor: '#eff6ff', borderRadius: 2, border: '2px solid #bfdbfe' }}>
+            <Typography variant="h5" component="h2" sx={{ fontWeight: 700, color: '#1e40af', mb: 2 }}>
+                First Monthly Mortgage Payment Breakdown
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                 This shows how the <strong>Total Monthly Payment</strong> is initially divided between the cost of borrowing (Interest) and debt reduction (Principal). This division changes every month.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-3 bg-white rounded-lg shadow">
-                    <p className="text-sm text-gray-500">Total Monthly Payment</p>
-                    <p className="text-2xl font-extrabold text-gray-700">{format(results.monthlyMortgagePayment, 'currency')}</p>
-                </div>
-                <div className="p-3 bg-red-100 rounded-lg shadow-inner border border-red-300">
-                    <p className="text-sm text-red-800">Interest Portion (Cost)</p>
-                    <p className="text-2xl font-bold text-red-700">{format(results.firstMonthInterest, 'currency')}</p>
-                </div>
-                <div className="p-3 bg-green-100 rounded-lg shadow-inner border border-green-300">
-                    <p className="text-sm text-green-800">Principal Portion (Equity)</p>
-                    <p className="text-2xl font-bold text-green-700">{format(results.firstMonthPrincipal, 'currency')}</p>
-                </div>
-            </div>
-        </div>
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 2, flexDirection: { xs: 'column', md: 'row' } }}>
+                <Box sx={{ flex: 1 }}>
+                    <Card>
+                        <CardContent>
+                            <Typography variant="body2" color="text.secondary">
+                                Total Monthly Payment
+                            </Typography>
+                            <Typography variant="h5" component="p" sx={{ fontWeight: 800, color: '#374151' }}>
+                                {format(results.monthlyMortgagePayment, 'currency')}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                    <Card sx={{ bgcolor: '#fee2e2', border: '1px solid #fecaca' }}>
+                        <CardContent>
+                            <Typography variant="body2" sx={{ color: '#991b1b' }}>
+                                Interest Portion (Cost)
+                            </Typography>
+                            <Typography variant="h5" component="p" sx={{ fontWeight: 700, color: '#b91c1c' }}>
+                                {format(results.firstMonthInterest, 'currency')}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                    <Card sx={{ bgcolor: '#dcfce7', border: '1px solid #bbf7d0' }}>
+                        <CardContent>
+                            <Typography variant="body2" sx={{ color: '#14532d' }}>
+                                Principal Portion (Equity)
+                            </Typography>
+                            <Typography variant="h5" component="p" sx={{ fontWeight: 700, color: '#15803d' }}>
+                                {format(results.firstMonthPrincipal, 'currency')}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                </Box>
+            </Box>
+        </Box>
     );
 };

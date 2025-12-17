@@ -1,37 +1,70 @@
 
 import React from 'react';
-import type { SimulationInput } from '../types';
+import { Box, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import type { SimulationInput, RenderLine } from '../types';
 
 interface EditableValueProps {
-    line: {
-        isPercent?: boolean;
-        stateKey: keyof SimulationInput;
-        format: 'currency' | 'percent' | 'm²' | 'number';
-        inputHighlight?: boolean;
-    };
+    line: RenderLine;
     inputs: SimulationInput;
     handleInputChange: (name: keyof SimulationInput, value: string, isPercent: boolean | undefined) => void;
 }
 
+const StyledInput = styled('input')({
+    border: 'none',
+    textAlign: 'right',
+    flexGrow: 1,
+    backgroundColor: 'transparent',
+    fontSize: '0.875rem', // Match TextField's small size
+    padding: '8.5px 8px', // Match TextField's padding
+    '&:focus': {
+        outline: 'none',
+    },
+    '&[type=number]': {
+        '-moz-appearance': 'textfield',
+    },
+    '&[type=number]::-webkit-outer-spin-button, &[type=number]::-webkit-inner-spin-button': {
+        '-webkit-appearance': 'none',
+        margin: 0,
+    },
+});
+
 export const EditableValue: React.FC<EditableValueProps> = ({ line, inputs, handleInputChange }) => {
-    const value = line.isPercent ? (inputs[line.stateKey] * 100) : inputs[line.stateKey];
-    const unit = line.isPercent ? '%' : (line.format === 'currency' ? '€' : line.format);
-    const step = line.isPercent ? '0.01' : (line.format === 'currency' ? '100' : '1');
+    const value = line.isPercent ? (inputs[line.stateKey!] * 100) : inputs[line.stateKey!];
+    const unit = line.isPercent ? '%' : (line.format === 'currency' ? '€' : (line.stateKey === 'yearsToSell' ? 'Years' : line.format));
     const displayValue = (value as number).toFixed(unit === 'm²' || line.stateKey === 'yearsToSell' ? 0 : 2);
+    const step = line.isPercent ? '0.01' : (line.format === 'currency' ? '100' : '1');
 
     return (
-        <div className={`relative flex rounded-md shadow-sm w-32 ml-auto ${line.inputHighlight ? 'bg-yellow-100' : ''}`}>
-            <input
+        <Box sx={{
+            display: 'flex',
+            alignItems: 'center', // Keep items aligned horizontally
+            border: '1px solid rgba(0, 0, 0, 0.23)',
+            borderRadius: '4px',
+            width: '12rem',
+            marginLeft: 'auto',
+            backgroundColor: line.inputHighlight ? '#fefcbf' : 'transparent',
+            '&:hover': {
+                borderColor: 'rgba(0, 0, 0, 0.87)',
+            }
+        }}>
+            <StyledInput
                 type="number"
                 name={line.stateKey}
                 value={displayValue}
-                onChange={(e) => handleInputChange(line.stateKey, e.target.value, line.isPercent)}
+                onChange={(e) => handleInputChange(line.stateKey!, e.target.value, line.isPercent)}
                 step={step}
-                className="flex-1 min-w-0 block w-full px-2 py-1 border border-gray-300 rounded-l-md focus:ring-blue-500 focus:border-blue-500 text-sm text-right"
             />
-            <span className="inline-flex items-center px-2 rounded-r-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
-                {unit}
-            </span>
-        </div>
+            <Box sx={{
+                borderLeft: '1px solid rgba(0, 0, 0, 0.23)',
+                p: '4px 10px',
+                backgroundColor: 'rgba(0, 0, 0, 0.03)',
+                alignSelf: 'stretch',
+                display: 'flex',
+                alignItems: 'center',
+            }}>
+                <Typography variant="body2" color="text.secondary">{unit}</Typography>
+            </Box>
+        </Box>
     );
 };

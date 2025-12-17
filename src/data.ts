@@ -132,34 +132,30 @@ export const getRenderData = (inputs: SimulationInput): { renderData: RenderData
         // I. PROJECT CAPITAL & ASSET VALUE
         { section: 'I. Project Capital & Asset Value', lines: [
             { L: 1, metric: 'Purchase Price (PP)', value: inputs.purchasePrice, format: 'currency', calc: 'Contract price.', isInput: true, stateKey: 'purchasePrice' },
-            { L: 2, metric: 'Renovation Budget (RENO)', value: inputs.renovationBudget, format: 'currency', calc: 'Planned improvements.', isInput: true, stateKey: 'renovationBudget' },
-
-            { L: 'R3', metric: 'Transfer Tax Rate', value: inputs.taxTransfer, format: 'percent', calc: 'Tax Rate.', isInput: true, stateKey: 'taxTransfer', isPercent: true, inputHighlight: true },
+            { L: 2, metric: 'Transfer Tax Rate', value: inputs.taxTransfer, format: 'percent', calc: 'Tax Rate.', isInput: true, stateKey: 'taxTransfer', isPercent: true, inputHighlight: true, evaluatedDisplay: format(results.transferTax, 'currency') },
             { L: 3, metric: 'Property Transfer Tax Cost', value: results.transferTax, format: 'currency', calc: `Purchase Price * Transfer Tax Rate` },
-
-            { L: 'R4', metric: 'Notary & Land Registry Rate', value: inputs.taxNotary, format: 'percent', calc: 'Fee Rate.', isInput: true, stateKey: 'taxNotary', isPercent: true, inputHighlight: true },
-            { L: 4, metric: 'Notary & Land Registry Cost', value: results.notaryAndLandRegistryCost, format: 'currency', calc: `Purchase Price * Notary & Land Registry Rate` },
-
-            { L: 'R5', metric: 'Broker Commission Rate', value: inputs.taxBroker, format: 'percent', calc: 'Broker Rate.', isInput: true, stateKey: 'taxBroker', isPercent: true, inputHighlight: true },
-            { L: 5, metric: 'Broker Commission Cost', value: results.brokerCommission, format: 'currency', calc: `Purchase Price * Broker Commission Rate` },
-
-            { L: 6, metric: 'Total Transaction Costs (TTC)', value: results.totalTransactionCosts, format: 'currency', calc: 'Property Transfer Tax Cost + Notary & Land Registry Cost + Broker Commission Cost' },
-            { L: 7, metric: 'TOTAL INVESTMENT BASE (TIB)', value: results.totalInvestmentBase, format: 'currency', calc: 'Purchase Price + Renovation Budget (The Appreciable Asset Value)', highlight: true },
-            { L: 8, metric: 'Property Size', value: inputs.propertySizeSqm, format: 'm²', calc: 'Kreuzberg, Baujahr 1958.', isInput: true, stateKey: 'propertySizeSqm', step: '1' },
+            { L: 4, metric: 'Notary & Land Registry Rate', value: inputs.taxNotary, format: 'percent', calc: 'Fee Rate.', isInput: true, stateKey: 'taxNotary', isPercent: true, inputHighlight: true, evaluatedDisplay: format(results.notaryAndLandRegistryCost, 'currency') },
+            { L: 5, metric: 'Renovation Budget (RENO)', value: inputs.renovationBudget, format: 'currency', calc: 'Planned improvements.', isInput: true, stateKey: 'renovationBudget' },
+            { L: 6, metric: 'Notary & Land Registry Cost', value: results.notaryAndLandRegistryCost, format: 'currency', calc: `Purchase Price * Notary & Land Registry Rate` },
+            { L: 7, metric: 'Broker Commission Rate', value: inputs.taxBroker, format: 'percent', calc: 'Broker Rate.', isInput: true, stateKey: 'taxBroker', isPercent: true, inputHighlight: true, evaluatedDisplay: format(results.brokerCommission, 'currency') },
+            { L: 8, metric: 'Broker Commission Cost', value: results.brokerCommission, format: 'currency', calc: `Purchase Price * Broker Commission Rate` },
+            { L: 9, metric: 'Total Transaction Costs (TTC)', value: results.totalTransactionCosts, format: 'currency', calc: 'Property Transfer Tax Cost + Notary & Land Registry Cost + Broker Commission Cost' },
+            { L: 10, metric: 'TOTAL INVESTMENT BASE (TIB)', value: results.totalInvestmentBase, format: 'currency', calc: 'Purchase Price + Renovation Budget (The Appreciable Asset Value)', highlight: true },
+            { L: 11, metric: 'Property Size', value: inputs.propertySizeSqm, format: 'm²', calc: 'Kreuzberg, Baujahr 1958.', isInput: true, stateKey: 'propertySizeSqm', step: '1' },
         ]},
         // II. EQUITY AND DEBT STRUCTURE
         { section: 'II. Equity and Debt Structure', lines: [
-            { L: 9, metric: 'Cash Down Payment (DP)', value: inputs.cashDownPayment, format: 'currency', calc: 'Initial cash committed.', isInput: true, stateKey: 'cashDownPayment' },
-            { L: 10, metric: 'TOTAL INITIAL OUTLAY (TIO)', value: results.totalInitialOutlay, format: 'currency', calc: 'Fixed cash input.' },
+            { L: 12, metric: 'Cash Down Payment (DP)', value: inputs.cashDownPayment, format: 'currency', calc: 'Initial cash committed.', isInput: true, stateKey: 'cashDownPayment' },
+            { L: 13, metric: 'TOTAL INITIAL OUTLAY (TIO)', value: results.totalInitialOutlay, format: 'currency', calc: 'Fixed cash input.' },
             {
-                L: 11,
+                L: 14,
                 metric: `Net Equity Applied to Asset (${format(results.netEquityAppliedToAsset / (results.totalInvestmentBase || 1), 'percent')} of TIB)`,
                 value: results.netEquityAppliedToAsset,
                 format: 'currency',
                 calc: `Total Initial Outlay - Total Transaction Costs.`
             },
             {
-                L: 12,
+                L: 15,
                 metric: `LOAN REQUIRED (LR) (${format(results.loanRequired / (results.totalInvestmentBase || 1), 'percent')} of TIB)`,
                 value: results.loanRequired,
                 format: 'currency',
@@ -167,21 +163,18 @@ export const getRenderData = (inputs: SimulationInput): { renderData: RenderData
                 highlight: true
             },
 
-            { L: 13, metric: 'Interest Rate (IR)', value: inputs.interestRate, format: 'percent', calc: 'Input: 10-Year Fixed', isInput: true, stateKey: 'interestRate', isPercent: true },
-            { L: 14, metric: 'Amortization Rate (AMORT)', value: inputs.amortizationRate, format: 'percent', calc: 'Set by borrower.', isInput: true, stateKey: 'amortizationRate', isPercent: true },
-
-            { L: 15, metric: 'Total Annual Debt Service Rate', value: results.annualDebtServiceRate, format: 'percent', calc: 'Interest Rate + Amortization Rate' },
-            { L: 16, metric: 'ANNUAL DEBT SERVICE (ADS)', value: results.annualDebtService, format: 'currency', calc: 'Loan Required * Total Annual Debt Service Rate' },
-            { L: 17, metric: 'Monthly Mortgage Payment', value: results.monthlyMortgagePayment, format: 'currency', calc: 'Annual Debt Service / 12' },
+            { L: 16, metric: 'Interest Rate (IR)', value: inputs.interestRate, format: 'percent', calc: 'Input: 10-Year Fixed', isInput: true, stateKey: 'interestRate', isPercent: true },
+            { L: 17, metric: 'Amortization Rate (AMORT)', value: inputs.amortizationRate, format: 'percent', calc: 'Set by borrower.', isInput: true, stateKey: 'amortizationRate', isPercent: true },
+            { L: 18, metric: 'Total Annual Debt Service Rate', value: results.annualDebtServiceRate, format: 'percent', calc: 'Interest Rate + Amortization Rate' },
+            { L: 19, metric: 'ANNUAL DEBT SERVICE (ADS)', value: results.annualDebtService, format: 'currency', calc: 'Loan Required * Total Annual Debt Service Rate' },
+            { L: 20, metric: 'Monthly Mortgage Payment', value: results.monthlyMortgagePayment, format: 'currency', calc: 'Annual Debt Service / 12' },
         ]},
         // III. COST OF OWNERSHIP (Owner-Occupier)
         { section: 'III. Monthly Cost of Ownership', lines: [
-            { L: 18, metric: 'Monthly Hausgeld (Full)', value: inputs.monthlyHausgeldFull, format: 'currency', calc: `Full WEG payment.`, isInput: true, stateKey: 'monthlyHausgeldFull' },
-
-            { L: 19, metric: 'Monthly Rental Income (Sublet)', value: inputs.monthlyRentalIncome, format: 'currency', calc: 'Income from renting out part of property.', isInput: true, stateKey: 'monthlyRentalIncome', inputHighlight: true },
-
+            { L: 21, metric: 'Monthly Hausgeld (Full)', value: inputs.monthlyHausgeldFull, format: 'currency', calc: `Full WEG payment.`, isInput: true, stateKey: 'monthlyHausgeldFull' },
+            { L: 22, metric: 'Monthly Rental Income (Sublet)', value: inputs.monthlyRentalIncome, format: 'currency', calc: 'Income from renting out part of property.', isInput: true, stateKey: 'monthlyRentalIncome', inputHighlight: true },
             {
-                L: 20,
+                L: 23,
                 metric: 'Monthly External Rent Payment',
                 value: inputs.monthlyExternalRent,
                 format: 'currency',
@@ -190,9 +183,8 @@ export const getRenderData = (inputs: SimulationInput): { renderData: RenderData
                 stateKey: 'monthlyExternalRent',
                 step: '10'
             },
-
             {
-                L: 21,
+                L: 24,
                 metric: 'DESIRED MONTHLY COST OF OWNERSHIP',
                 value: inputs.desiredMonthlyCost,
                 format: 'currency',
@@ -201,9 +193,8 @@ export const getRenderData = (inputs: SimulationInput): { renderData: RenderData
                 stateKey: 'desiredMonthlyCost',
                 inputHighlight: true
             },
-
             {
-                L: 22,
+                L: 25,
                 metric: 'ACTUAL MONTHLY EXPENSE (Total Cash Out)',
                 value: Math.abs(results.monthlyCashFlow),
                 format: 'currency',
@@ -214,34 +205,28 @@ export const getRenderData = (inputs: SimulationInput): { renderData: RenderData
         ]},
         // IV. LONG-TERM PROJECTION
         { section: 'IV. Long-Term Projection (Asset P&L)', lines: [
-            { L: 23, metric: 'Sell After X Years', value: inputs.yearsToSell, format: 'number', calc: 'Holding period for calculation.', isInput: true, stateKey: 'yearsToSell', step: '1' },
-            { L: 24, metric: 'Annual Appreciation Rate (R%)', value: inputs.annualAppreciationRate, format: 'percent', calc: 'Assumed annual value increase.', isInput: true, stateKey: 'annualAppreciationRate', isPercent: true, inputHighlight: true },
-
+            { L: 26, metric: 'Sell After X Years', value: inputs.yearsToSell, format: 'number', calc: 'Holding period for calculation.', isInput: true, stateKey: 'yearsToSell', step: '1' },
+            { L: 27, metric: 'Annual Appreciation Rate (R%)', value: inputs.annualAppreciationRate, format: 'percent', calc: 'Assumed annual value increase.', isInput: true, stateKey: 'annualAppreciationRate', isPercent: true, inputHighlight: true },
             {
-                L: 25,
+                L: 28,
                 metric: `Total Interest Paid (over ${inputs.yearsToSell} years)`,
                 value: results.totalInterestPaid,
                 format: 'currency',
                 calc: 'Total cost of borrowing over the period (<strong>pure loss</strong>).'
             },
             {
-                L: 26,
+                L: 29,
                 metric: `Total Principal Paid (over ${inputs.yearsToSell} years)`,
                 value: results.totalPrincipalPaid,
                 format: 'currency',
                 calc: 'The cash converted from debt to <strong>equity</strong>. This is a form of <strong>savings</strong>, not a financial loss.',
             },
-
-            { L: 27, metric: `Loan Balance After ${inputs.yearsToSell} Years`, value: results.loanBalanceAtSale, format: 'currency', calc: 'Remaining debt paid at closing.' },
-
-            { L: 28, metric: `Total External Rent Paid (over ${inputs.yearsToSell} years)`, value: results.totalExternalRentPeriod, format: 'currency', calc: 'Monthly External Rent * 12 * Years to Sell.'},
-
-            { L: 29, metric: `Total Running Costs (over ${inputs.yearsToSell} years)`, value: results.totalRunningCostPeriod, format: 'currency', calc: 'Total Annual Running Costs * Years to Sell'},
-
-            { L: 30, metric: `Estimated Sale Value (after ${inputs.yearsToSell} years)`, value: results.estimatedSaleValue, format: 'currency', calc: `Purchase Price * (1 + Annual Appreciation Rate) ^ Years to Sell` },
-
+            { L: 30, metric: `Loan Balance After ${inputs.yearsToSell} Years`, value: results.loanBalanceAtSale, format: 'currency', calc: 'Remaining debt paid at closing.' },
+            { L: 31, metric: `Total External Rent Paid (over ${inputs.yearsToSell} years)`, value: results.totalExternalRentPeriod, format: 'currency', calc: 'Monthly External Rent * 12 * Years to Sell.'},
+            { L: 32, metric: `Total Running Costs (over ${inputs.yearsToSell} years)`, value: results.totalRunningCostPeriod, format: 'currency', calc: 'Total Annual Running Costs * Years to Sell'},
+            { L: 33, metric: `Estimated Sale Value (after ${inputs.yearsToSell} years)`, value: results.estimatedSaleValue, format: 'currency', calc: `Purchase Price * (1 + Annual Appreciation Rate) ^ Years to Sell` },
             {
-                L: 31,
+                L: 34,
                 metric: `TOTAL CASH OUT (Irreversible Costs)`,
                 value: results.totalCashOut,
                 format: 'currency',
@@ -249,9 +234,8 @@ export const getRenderData = (inputs: SimulationInput): { renderData: RenderData
                 highlight: true,
                 isCost: true
             },
-
             {
-                L: 32,
+                L: 35,
                 metric: `NET SALE PROCEEDS (Total Inflow)`,
                 value: results.netSaleProceeds,
                 format: 'currency',
@@ -259,9 +243,8 @@ export const getRenderData = (inputs: SimulationInput): { renderData: RenderData
                 highlight: true,
                 flow: true
             },
-
             {
-                L: 33,
+                L: 36,
                 metric: `ESTIMATED TOTAL NET WEALTH CHANGE (Asset P&L)`,
                 value: results.netProceeds,
                 format: 'currency',
@@ -269,8 +252,7 @@ export const getRenderData = (inputs: SimulationInput): { renderData: RenderData
                 highlight: true,
                 flow: true
             },
-
-            { L: 34, metric: 'Fully Repaid After Y Years', value: typeof results.repaymentYears === 'number' ? results.repaymentYears : 0, format: 'number', calc: 'Loan Required amortization time at Monthly Mortgage Payment', highlight: true },
+            { L: 37, metric: 'Fully Repaid After Y Years', value: typeof results.repaymentYears === 'number' ? results.repaymentYears : 0, format: 'number', calc: 'Loan Required amortization time at Monthly Mortgage Payment', highlight: true },
         ]},
     ];
 

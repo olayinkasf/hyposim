@@ -1,5 +1,14 @@
 
 import React from 'react';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow as MuiTableRow,
+    Paper
+} from '@mui/material';
 import type { RenderData, SimulationInput } from '../types';
 import { TableRow } from './TableRow';
 
@@ -12,30 +21,37 @@ interface ResultsTableProps {
 
 export const ResultsTable: React.FC<ResultsTableProps> = ({ renderData, inputs, handleInputChange, desiredMonthlyCost }) => {
     return (
-        <div id="simulation-results" className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                    <tr>
-                        <th scope="col" className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[5%]">L</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[65%]">Metric & Details</th>
-                        <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-[30%]">Value (Edit Here)</th>
-                    </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+        <TableContainer component={Paper} elevation={0} id="simulation-results" sx={{ height: '100%', overflow: 'auto' }}>
+            <Table sx={{ minWidth: 650 }} stickyHeader aria-label="simulation results table">
+                <TableHead sx={{ bgcolor: '#f9fafb' }}>
+                    <MuiTableRow>
+                        <TableCell sx={{ width: '5%', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>L</TableCell>
+                        <TableCell sx={{ width: '65%', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Metric & Details</TableCell>
+                        <TableCell align="right" sx={{ width: '30%', fontWeight: 500, color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Value (Edit Here)</TableCell>
+                    </MuiTableRow>
+                </TableHead>
+                <TableBody>
                     {renderData.map((section, sectionIndex) => (
                         <React.Fragment key={sectionIndex}>
-                            <tr>
-                                <td colSpan={3} className="px-6 py-4 bg-gray-100 text-left text-sm font-bold text-gray-700 uppercase tracking-wider rounded-t-lg">
+                            <MuiTableRow>
+                                <TableCell colSpan={3} sx={{
+                                    bgcolor: '#f3f4f6',
+                                    textAlign: 'left',
+                                    fontWeight: 700,
+                                    color: '#374151',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.05em'
+                                }}>
                                     {section.section}
-                                </td>
-                            </tr>
+                                </TableCell>
+                            </MuiTableRow>
                             {section.lines.map((line, lineIndex) => (
                                 <TableRow key={lineIndex} line={line} inputs={inputs} handleInputChange={handleInputChange} desiredMonthlyCost={desiredMonthlyCost}/>
                             ))}
                         </React.Fragment>
                     ))}
-                </tbody>
-            </table>
-        </div>
+                </TableBody>
+            </Table>
+        </TableContainer>
     );
 };

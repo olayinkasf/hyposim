@@ -66,7 +66,7 @@ export interface RenderData {
 }
 
 export interface RenderLine {
-    L: number | string;
+    L: number;
     metric: string;
     value: number;
     format: 'currency' | 'percent' | 'm²' | 'number';
@@ -79,4 +79,5 @@ export interface RenderLine {
     step?: string;
     isCost?: boolean;
     flow?: boolean;
+    evaluatedDisplay?: string;
 }

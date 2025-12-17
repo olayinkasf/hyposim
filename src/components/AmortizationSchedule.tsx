@@ -1,5 +1,18 @@
 
 import React, { useState } from 'react';
+import {
+    Box,
+    Button,
+    Collapse,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    Typography
+} from '@mui/material';
 import type { SimulationResult, SimulationInput, AmortizationData } from '../types';
 import { format } from '../formatters';
 
@@ -12,39 +25,53 @@ export const AmortizationSchedule: React.FC<AmortizationScheduleProps> = ({ resu
     const [isScheduleVisible, setIsScheduleVisible] = useState(false);
 
     return (
-        <div id="amortization-schedule" className="mt-10 p-6 bg-gray-50 rounded-xl border-2 border-gray-200">
-            <button
+        <Box id="amortization-schedule" sx={{ mt: 5, p: 3, bgcolor: '#f9fafb', borderRadius: 2 }}>
+            <Button
                 onClick={() => setIsScheduleVisible(!isScheduleVisible)}
-                className="w-full text-left py-3 px-4 bg-gray-200 hover:bg-gray-300 rounded-lg text-xl font-bold text-gray-700 flex justify-between items-center transition duration-150"
+                fullWidth
+                sx={{
+                    justifyContent: 'space-between',
+                    textAlign: 'left',
+                    p: 2,
+                    bgcolor: '#e5e7eb',
+                    color: '#374151',
+                    '&:hover': { bgcolor: '#d1d5db' }
+                }}
             >
-                Monthly Amortization Schedule ({inputs.yearsToSell} Years)
-                <span className="text-base">{isScheduleVisible ? '▲ Hide Details' : '▼ Show Details'}</span>
-            </button>
+                <Typography variant="h6" component="span" sx={{ fontWeight: 700 }}>
+                    Monthly Amortization Schedule ({inputs.yearsToSell} Years)
+                </Typography>
+                <Typography variant="body2" component="span">
+                    {isScheduleVisible ? '▲ Hide Details' : '▼ Show Details'}
+                </Typography>
+            </Button>
 
-            {results.amortizationSchedule && isScheduleVisible && (
-                <div className="mt-4 overflow-x-auto max-h-[400px] border border-gray-300 rounded-lg shadow-inner">
-                    <table className="min-w-full divide-y divide-gray-300">
-                        <thead className="bg-gray-200 sticky top-0 z-10 shadow-sm">
-                            <tr>
-                                <th className="px-3 py-2 text-left text-xs font-semibold text-gray-600 uppercase w-1/12">Month</th>
-                                <th className="px-3 py-2 text-right text-xs font-semibold text-gray-600 uppercase w-3/12">Interest Paid</th>
-                                <th className="px-3 py-2 text-right text-xs font-semibold text-gray-600 uppercase w-3/12">Principal Paid</th>
-                                <th className="px-3 py-2 text-right text-xs font-semibold text-gray-600 uppercase w-5/12">Remaining Balance</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-100">
+            <Collapse in={isScheduleVisible}>
+                <TableContainer component={Paper} sx={{ mt: 2, maxHeight: 400 }}>
+                    <Table stickyHeader aria-label="amortization schedule">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell sx={{ width: '8.333333%', fontWeight: 600, color: '#4b5563', textTransform: 'uppercase' }}>Month</TableCell>
+                                <TableCell align="right" sx={{ width: '25%', fontWeight: 600, color: '#4b5563', textTransform: 'uppercase' }}>Interest Paid</TableCell>
+                                <TableCell align="right" sx={{ width: '25%', fontWeight: 600, color: '#4b5563', textTransform: 'uppercase' }}>Principal Paid</TableCell>
+                                <TableCell align="right" sx={{ width: '41.666667%', fontWeight: 600, color: '#4b5563', textTransform: 'uppercase' }}>Remaining Balance</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
                             {results.amortizationSchedule.map((item: AmortizationData) => (
-                                <tr key={item.month} className="hover:bg-blue-50">
-                                    <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-600">{item.month}</td>
-                                    <td className="px-3 py-2 whitespace-nowrap text-sm text-right text-red-600">{format(item.interest, 'currency')}</td>
-                                    <td className="px-3 py-2 whitespace-nowrap text-sm text-right text-green-600">{format(item.principal, 'currency')}</td>
-                                    <td className="px-3 py-2 whitespace-nowrap text-sm text-right font-medium text-gray-800">{format(item.remainingBalance, 'currency')}</td>
-                                </tr>
+                                <TableRow key={item.month} hover>
+                                    <TableCell component="th" scope="row" sx={{ color: '#4b5563' }}>
+                                        {item.month}
+                                    </TableCell>
+                                    <TableCell align="right" sx={{ color: '#dc2626' }}>{format(item.interest, 'currency')}</TableCell>
+                                    <TableCell align="right" sx={{ color: '#16a34a' }}>{format(item.principal, 'currency')}</TableCell>
+                                    <TableCell align="right" sx={{ fontWeight: 500, color: '#1f2937' }}>{format(item.remainingBalance, 'currency')}</TableCell>
+                                </TableRow>
                             ))}
-                        </tbody>
-                    </table>
-                </div>
-            )}
-        </div>
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Collapse>
+        </Box>
     );
 };
