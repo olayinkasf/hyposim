@@ -1,11 +1,8 @@
 import React from 'react';
-import {Typography, Box, Button} from '@mui/material';
+import {Typography, Box} from '@mui/material';
+import { Link } from 'react-router-dom';
 
-interface HeaderProps {
-    handleReset: () => void;
-}
-
-export const Header: React.FC<HeaderProps> = ({ handleReset }) => {
+export const Header: React.FC = () => {
     return (
         <Box sx={{
             position: 'sticky',
@@ -19,19 +16,18 @@ export const Header: React.FC<HeaderProps> = ({ handleReset }) => {
             justifyContent: 'space-between',
             alignItems: 'center'
         }}>
-            <Box sx={{display: 'flex', alignItems: 'center'}}>
-                <img src="/logo.jpg" alt="Hyposim Logo" style={{height: '40px', marginRight: '16px'}}/>
-                <div>
-                    <Typography variant="h5" component="h1" sx={{fontWeight: 800, color: '#1f2937'}}>
-                        HypoSim Deutschland
-                    </Typography> <Typography variant="body2" sx={{color: '#6b7280'}}>
-                    Owner-Occupier Cost & Equity Simulator
-                </Typography>
-                </div>
-            </Box>
-            <Button variant="outlined" onClick={handleReset}>
-                Reset to Defaults
-            </Button>
+            <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+                <Box sx={{display: 'flex', alignItems: 'center', cursor: 'pointer'}}>
+                    <img src="/logo.jpg" alt="Hyposim Logo" style={{height: '40px', marginRight: '16px'}}/>
+                    <div>
+                        <Typography variant="h5" component="h1" sx={{fontWeight: 800, color: '#1f2937'}}>
+                            HypoSim Deutschland
+                        </Typography> <Typography variant="body2" sx={{color: '#6b7280'}}>
+                        Owner-Occupier Cost & Equity Simulator
+                    </Typography>
+                    </div>
+                </Box>
+            </Link>
         </Box>
     );
 };

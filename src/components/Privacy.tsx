@@ -1,28 +1,49 @@
 import React from 'react';
-import { Container, Typography, Paper } from '@mui/material';
+import { Container, Typography, Paper, Box } from '@mui/material';
 
 const Privacy: React.FC = () => {
     return (
-        <Container maxWidth="md" sx={{ py: 4 }}>
-            <Paper sx={{ p: 4 }}>
+        <Container maxWidth="md">
+            <Paper sx={{ p: 4, my: 4 }}>
                 <Typography variant="h4" component="h1" gutterBottom>
                     Datenschutzerklärung (Privacy Policy)
                 </Typography>
-                <Typography variant="body1" paragraph>
-                    Wir legen größten Wert auf den Schutz Ihrer Daten und die Wahrung Ihrer Privatsphäre. Nachstehend informieren wir Sie deshalb über die Erhebung und Verwendung persönlicher Daten bei Nutzung unserer Webseite.
-                </Typography>
-                <Typography variant="h6">
-                    Datenerfassung auf unserer Website
-                </Typography>
-                <Typography variant="body1" paragraph>
-                    Verantwortlicher für die Datenverarbeitung auf dieser Website im Sinne der Datenschutz-Grundverordnung (DSGVO) ist der Betreiber dieser Seite.
-                </Typography>
-                <Typography variant="h6">
-                    Ihre Rechte als Betroffener
-                </Typography>
-                <Typography variant="body1" paragraph>
-                    Sie haben jederzeit das Recht, unentgeltlich Auskunft über Herkunft, Empfänger und Zweck Ihrer gespeicherten personenbezogenen Daten zu erhalten. Sie haben außerdem ein Recht, die Berichtigung, Sperrung oder Löschung dieser Daten zu verlangen.
-                </Typography>
+
+                <Box sx={{ my: 2 }}>
+                    <Typography variant="h6">1. Datenschutz auf einen Blick</Typography>
+                    <Typography paragraph>
+                        Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren personenbezogenen Daten passiert, wenn Sie diese Website besuchen. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können. Ausführliche Informationen zum Thema Datenschutz entnehmen Sie unserer unter diesem Text aufgeführten Datenschutzerklärung.
+                    </Typography>
+                </Box>
+
+                <Box sx={{ my: 2 }}>
+                    <Typography variant="h6">2. Allgemeine Hinweise und Pflichtinformationen</Typography>
+                    <Typography variant="h5" component="h3" sx={{ mt: 2 }}>Datenschutz</Typography>
+                    <Typography paragraph>
+                        Die Betreiber dieser Seiten nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend der gesetzlichen Datenschutzvorschriften sowie dieser Datenschutzerklärung.
+                    </Typography>
+                    <Typography paragraph>
+                        Diese Anwendung verarbeitet die von Ihnen eingegebenen Daten ausschließlich lokal in Ihrem Browser. Es werden keine personenbezogenen Daten an einen Server übermittelt oder dort gespeichert.
+                    </Typography>
+
+
+                    <Typography variant="h5" component="h3" sx={{ mt: 2 }}>Hinweis zur verantwortlichen Stelle</Typography>
+                    <Typography paragraph>
+                        Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist: <br />
+                        John Doe <br />
+                        Musterstraße 1 <br />
+                        12345 Musterstadt <br />
+                        Telefon: +49 (0) 123 456789 <br />
+                        E-Mail: john.doe@example.com
+                    </Typography>
+                </Box>
+
+                <Box sx={{ my: 2 }}>
+                    <Typography variant="h6">3. Datenerfassung auf dieser Website</Typography>
+                    <Typography paragraph>
+                        Da diese Anwendung vollständig im Browser des Benutzers ausgeführt wird, werden keine persönlichen Finanzdaten an einen Server gesendet oder dort gespeichert. Alle eingegebenen Daten verbleiben ausschließlich auf Ihrem Gerät.
+                    </Typography>
+                </Box>
             </Paper>
         </Container>
     );

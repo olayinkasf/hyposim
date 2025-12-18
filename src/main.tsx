@@ -4,19 +4,25 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App.tsx';
 import Impressum from './components/Impressum.tsx';
 import Privacy from './components/Privacy.tsx';
+import Layout from './components/Layout.tsx';
 
 const router = createBrowserRouter([
   {
-    path: '/',
-    element: <App />,
-  },
-  {
-    path: '/impressum',
-    element: <Impressum />,
-  },
-  {
-    path: '/privacy',
-    element: <Privacy />,
+    element: <Layout />,
+    children: [
+      {
+        path: '/',
+        element: <App />,
+      },
+      {
+        path: '/impressum',
+        element: <Impressum />,
+      },
+      {
+        path: '/privacy',
+        element: <Privacy />,
+      },
+    ],
   },
 ]);
 

@@ -43,11 +43,7 @@ export const useSimulation = () => {
         }));
     };
 
-    const handleReset = () => {
-        setInputs(initialInputs);
-    };
-
     const { results, renderData } = useMemo(() => getRenderData(inputs), [inputs]);
 
-    return { inputs, results, renderData, handleInputChange, handleReset };
+    return { inputs, results, renderData, handleInputChange };
 };

@@ -40,7 +40,15 @@ export const DisclaimerModal = ({ open, onClose }: DisclaimerModalProps) => {
                 <Typography>
                     <strong>No Data is Stored:</strong> This application runs entirely in your browser. No personal financial data is sent to any server.
                 </Typography>
-                <Button variant="contained" color="primary" onClick={onClose} sx={{ mt: 2 }} fullWidth>
+                <Button variant="contained" color="primary" onClick={onClose} sx={{
+                    mt: 2,
+                    boxShadow: '0 3px 5px 2px rgba(33, 203, 243, .3)',
+                    transition: '0.3s',
+                    '&:hover': {
+                        transform: 'scale(1.02)',
+                        boxShadow: '0 6px 10px 4px rgba(33, 203, 243, .3)',
+                    },
+                }} fullWidth>
                     I Understand & Accept
                 </Button>
             </Box>
