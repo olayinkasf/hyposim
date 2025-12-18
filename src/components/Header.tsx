@@ -1,7 +1,11 @@
 import React from 'react';
-import {Typography, Box} from '@mui/material';
+import {Typography, Box, Button} from '@mui/material';
 
-export const Header: React.FC = () => {
+interface HeaderProps {
+    handleReset: () => void;
+}
+
+export const Header: React.FC<HeaderProps> = ({ handleReset }) => {
     return (
         <Box sx={{
             position: 'sticky',
@@ -10,7 +14,10 @@ export const Header: React.FC = () => {
             width: '100%',
             bgcolor: '#f3f4f6',
             zIndex: 1100,
-            p: {xs: 1, sm: 2}
+            p: {xs: 1, sm: 2},
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
         }}>
             <Box sx={{display: 'flex', alignItems: 'center'}}>
                 <img src="/logo.jpg" alt="Hyposim Logo" style={{height: '40px', marginRight: '16px'}}/>
@@ -22,6 +29,9 @@ export const Header: React.FC = () => {
                 </Typography>
                 </div>
             </Box>
+            <Button variant="outlined" onClick={handleReset}>
+                Reset to Defaults
+            </Button>
         </Box>
     );
 };

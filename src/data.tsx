@@ -317,7 +317,7 @@ export const getRenderData = (inputs: SimulationInput): { renderData: RenderData
                     calc: 'Loan Required - Total Principal Paid'
                 },
                 {
-                    metric: `Total Cash Out`,
+                    metric: 'Total Cash Out',
                     value: inputs.cashDownPayment + results.totalAnnualCost * inputs.yearsToSell,
                     format: 'currency',
                     calc: 'Cash Down Payment + Total Cost of Ownership',
@@ -325,7 +325,7 @@ export const getRenderData = (inputs: SimulationInput): { renderData: RenderData
                     isCost: true
                 },
                 {
-                    metric: `Total Cash Lost`,
+                    metric: 'Total Cash Lost',
                     value: inputs.cashDownPayment + results.totalAnnualCost * inputs.yearsToSell - results.totalPrincipalPaid,
                     format: 'currency',
                     calc: 'Total Cash Out - Total Principal Paid',
@@ -333,7 +333,7 @@ export const getRenderData = (inputs: SimulationInput): { renderData: RenderData
                     isCost: true
                 },
                 {
-                    metric: `Net Sale Proceeds`,
+                    metric: 'Net Sale Proceeds',
                     value: results.netSaleProceeds,
                     format: 'currency',
                     calc: 'Estimated Sale Value - Loan Balance After X Years. <strong>Total Principal Paid</strong> reduces the loan balance, thus increasing your <strong>cash inflow</strong>.',
@@ -341,7 +341,7 @@ export const getRenderData = (inputs: SimulationInput): { renderData: RenderData
                     flow: true
                 },
                 {
-                    metric: `Total Net Wealth Change (Asset P&L)`,
+                    metric: 'Total Net Wealth Change (Asset P&L)',
                     value: results.netProceeds,
                     format: 'currency',
                     calc: 'Net Sale Proceeds - Total Cash Lost',

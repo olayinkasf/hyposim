@@ -13,10 +13,9 @@ interface ResultsTableProps {
     renderData: RenderData[];
     inputs: SimulationInput;
     handleInputChange: (name: keyof SimulationInput, value: string, isPercent: boolean | undefined) => void;
-    desiredMonthlyCost: number;
 }
 
-export const ResultsTable: React.FC<ResultsTableProps> = ({ renderData, inputs, handleInputChange, desiredMonthlyCost }) => {
+export const ResultsTable: React.FC<ResultsTableProps> = ({ renderData, inputs, handleInputChange }) => {
     let lineNumber = 0;
 
     return (
@@ -30,9 +29,7 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({ renderData, inputs, 
                                     bgcolor: '#f3f4f6',
                                     textAlign: 'left',
                                     fontWeight: 700,
-                                    color: '#374151',
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.05em'
+                                    color: '#374151'
                                 }}>
                                     {section.section}
                                 </TableCell>
@@ -45,7 +42,6 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({ renderData, inputs, 
                                     line={line}
                                     inputs={inputs}
                                     handleInputChange={handleInputChange}
-                                    desiredMonthlyCost={desiredMonthlyCost}
                                     color={line.color}
                                 />
                             })}
