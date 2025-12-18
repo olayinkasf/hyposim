@@ -267,6 +267,8 @@ export const getRenderData = (inputs: SimulationInput): { renderData: RenderData
                     color: results.monthlyCashFlow > 0
                         ? 'green' : Math.abs(results.monthlyCashFlow) > inputs.desiredMonthlyCost
                             ? 'red' : 'highlight',
+                    evaluatedDisplay: format(Math.abs(results.monthlyCashFlow) * 12 * inputs.yearsToSell, 'currency'),
+                    evaluatedDescription: `after ${inputs.yearsToSell} years`,
                     isCost: true
                 },
             ]
@@ -290,8 +292,11 @@ export const getRenderData = (inputs: SimulationInput): { renderData: RenderData
                     isInput: true,
                     stateKey: 'annualAppreciationRate',
                     isPercent: true,
-                    inputHighlight: true
+                    inputHighlight: true,
+                    evaluatedDisplay: format(results.estimatedSaleValue, 'currency'),
+                    evaluatedDescription: `after ${inputs.yearsToSell} years`
                 },
+
                 {
                     metric: `Total Interest Paid (over ${inputs.yearsToSell} years)`,
                     value: results.totalInterestPaid,
@@ -309,30 +314,26 @@ export const getRenderData = (inputs: SimulationInput): { renderData: RenderData
                     metric: `Loan Balance After ${inputs.yearsToSell} Years`,
                     value: results.loanBalanceAtSale,
                     format: 'currency',
-                    calc: 'Remaining debt paid at closing.'
+                    calc: 'Loan Required - Total Principal Paid'
                 },
                 {
-                    metric: `Total External Rent Paid (over ${inputs.yearsToSell} years)`,
-                    value: results.totalExternalRentPeriod,
+                    metric: `Total Cash Out`,
+                    value: inputs.cashDownPayment + results.totalAnnualCost * inputs.yearsToSell,
                     format: 'currency',
-                    calc: 'Monthly External Rent * 12 * Years to Sell.'
-                },
-                {
-                    metric: `Estimated Sale Value (after ${inputs.yearsToSell} years)`,
-                    value: results.estimatedSaleValue,
-                    format: 'currency',
-                    calc: `Purchase Price * (1 + Annual Appreciation Rate) ^ Years to Sell`
-                },
-                {
-                    metric: `TOTAL CASH OUT (Irreversible Costs)`,
-                    value: results.totalCashOut,
-                    format: 'currency',
-                    calc: 'Initial Outlay + Interest + Running Costs + <strong>External Rent</strong> - Rental Income.',
+                    calc: 'Cash Down Payment + Total Cost of Ownership',
                     color: 'red',
                     isCost: true
                 },
                 {
-                    metric: `NET SALE PROCEEDS (Total Inflow)`,
+                    metric: `Total Cash Lost`,
+                    value: inputs.cashDownPayment + results.totalAnnualCost * inputs.yearsToSell - results.totalPrincipalPaid,
+                    format: 'currency',
+                    calc: 'Total Cash Out - Total Principal Paid',
+                    color: 'red',
+                    isCost: true
+                },
+                {
+                    metric: `Net Sale Proceeds`,
                     value: results.netSaleProceeds,
                     format: 'currency',
                     calc: 'Estimated Sale Value - Loan Balance After X Years. <strong>Total Principal Paid</strong> reduces the loan balance, thus increasing your <strong>cash inflow</strong>.',
@@ -340,15 +341,15 @@ export const getRenderData = (inputs: SimulationInput): { renderData: RenderData
                     flow: true
                 },
                 {
-                    metric: `ESTIMATED TOTAL NET WEALTH CHANGE (Asset P&L)`,
+                    metric: `Total Net Wealth Change (Asset P&L)`,
                     value: results.netProceeds,
                     format: 'currency',
-                    calc: '<strong>NET SALE PROCEEDS (Total Inflow)</strong> - <strong>TOTAL CASH OUT (Total Irreversible Costs)</strong>',
+                    calc: 'Net Sale Proceeds - Total Cash Lost',
                     color: results.netProceeds > 0 ? 'green' : 'red',
                     flow: true
                 },
                 {
-                    metric: 'Fully Repaid After Y Years',
+                    metric: 'Fully Repaid After Years',
                     value: typeof results.repaymentYears === 'number' ? results.repaymentYears : 0,
                     format: 'number',
                     calc: 'Loan  Required amortization time at Monthly Mortgage Payment',

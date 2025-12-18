@@ -94,7 +94,7 @@ export const TableRow: React.FC<TableRowProps> = ({
                                             color: '#7e7e7e',
                                             marginRight: '4px'
                                         }}>
-                                {line.evaluatedDescription || "= " + line.evaluatedDisplay}
+                                {(line.evaluatedDescription || "") + " = " + line.evaluatedDisplay}
                             </Typography>
                         </Box>
                     )}
