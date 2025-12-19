@@ -4,7 +4,7 @@ import {sanitizeHTMLMinimal} from '../utils/sanitize';
 import type {RenderLine, SimulationInput} from '../types';
 import {format} from '../formatters';
 import {EditableValue} from './EditableValue';
-import { colors, spacing, transitions } from '../theme/colors';
+import {colors, spacing, transitions} from '../theme/colors';
 
 interface TableRowProps {
     line: RenderLine;
@@ -45,13 +45,13 @@ export const TableRow: React.FC<TableRowProps> = ({
 
         switch (color) {
             case 'highlight':
-                return { ...baseStyle, bgcolor: colors.primary[100], '&:hover': { bgcolor: colors.primary[200] } };
+                return {...baseStyle, bgcolor: colors.primary[100], '&:hover': {bgcolor: colors.primary[200]}};
             case 'red':
-                return { ...baseStyle, bgcolor: colors.error[50], '&:hover': { bgcolor: colors.error[100] } };
+                return {...baseStyle, bgcolor: colors.error[50], '&:hover': {bgcolor: colors.error[100]}};
             case 'green':
-                return { ...baseStyle, bgcolor: colors.success[50], '&:hover': { bgcolor: colors.success[100] } };
+                return {...baseStyle, bgcolor: colors.success[50], '&:hover': {bgcolor: colors.success[100]}};
             case 'yellow':
-                return { ...baseStyle, bgcolor: colors.warning[50], '&:hover': { bgcolor: colors.warning[100] } };
+                return {...baseStyle, bgcolor: colors.warning[50], '&:hover': {bgcolor: colors.warning[100]}};
             default:
                 return {
                     ...baseStyle,
@@ -84,7 +84,7 @@ export const TableRow: React.FC<TableRowProps> = ({
             }}>
                 {lineNumber}.
             </TableCell>
-            <TableCell sx={{ py: spacing.sm, px: spacing.md }}>
+            <TableCell sx={{py: spacing.sm, px: spacing.md}}>
                 <Typography variant="body2" sx={{
                     fontWeight: color === 'highlight' ? 600 : 400,
                     color: color === 'highlight' ? colors.text.primary : colors.text.secondary,

@@ -1,19 +1,19 @@
 // Comprehensive Design System
 
 export const spacing = {
-    xs: '8px',
-    sm: '16px',
-    md: '24px',
-    lg: '32px',
-    xl: '48px',
-    xxl: '64px',
+    xs: '4px',
+    sm: '8px',
+    md: '12px',
+    lg: '16px',
+    xl: '24px',
+    xxl: '32px',
 };
 
 export const borderRadius = {
-    sm: '4px',
-    md: '8px',
-    lg: '12px',
-    xl: '16px',
+    sm: '2px',
+    md: '4px',
+    lg: '6px',
+    xl: '8px',
     full: '9999px',
 };
 
