@@ -16,7 +16,14 @@ interface ResultsTableProps {
 }
 
 export const ResultsTable: React.FC<ResultsTableProps> = ({ renderData, inputs, handleInputChange }) => {
-    let lineNumber = 0;
+    // Calculate cumulative line numbers without mutation during render
+    const getLineNumber = (sectionIndex: number, lineIndex: number): number => {
+        let count = 0;
+        for (let i = 0; i < sectionIndex; i++) {
+            count += renderData[i].lines.length;
+        }
+        return count + lineIndex + 1;
+    };
 
     return (
         <TableContainer id="simulation-results" sx={{ height: '100%', overflow: 'auto' }}>
@@ -34,17 +41,16 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({ renderData, inputs, 
                                     {section.section}
                                 </TableCell>
                             </MuiTableRow>
-                            {section.lines.map((line, lineIndex) => {
-                                lineNumber++;
-                                return <TableRow
+                            {section.lines.map((line, lineIndex) => (
+                                <TableRow
                                     key={lineIndex}
-                                    lineNumber={lineNumber}
+                                    lineNumber={getLineNumber(sectionIndex, lineIndex)}
                                     line={line}
                                     inputs={inputs}
                                     handleInputChange={handleInputChange}
                                     color={line.color}
                                 />
-                            })}
+                            ))}
                         </React.Fragment>
                     ))}
                 </TableBody>

@@ -1,8 +1,11 @@
 import React from 'react';
 import {Typography, Box} from '@mui/material';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export const Header: React.FC = () => {
+    const { t } = useTranslation();
+
     return (
         <Box sx={{
             position: 'sticky',
@@ -21,9 +24,9 @@ export const Header: React.FC = () => {
                     <img src="/logo.jpg" alt="Hyposim Logo" style={{height: '40px', marginRight: '16px'}}/>
                     <div>
                         <Typography variant="h5" component="h1" sx={{fontWeight: 800, color: '#1f2937'}}>
-                            HypoSim Deutschland
+                            {t('header.title')}
                         </Typography> <Typography variant="body2" sx={{color: '#6b7280'}}>
-                        Owner-Occupier Cost & Equity Simulator
+                        {t('header.subtitle')}
                     </Typography>
                     </div>
                 </Box>

@@ -50,7 +50,7 @@ const App = () => {
                         maxHeight: { md: 'calc(100vh - 4rem)' },
                         overflow: { md: 'auto' }
                     }}> {/* Right Column for other components */}
-                        <RightSection inputs={inputs} />
+                        <RightSection />
                         <Summary results={results} inputs={inputs} />
                         <PaymentBreakdown results={results} />
                         <AmortizationSchedule results={results} inputs={inputs} />

@@ -1,5 +1,6 @@
 import React from 'react';
 import {TableRow as MuiTableRow, TableCell, Typography, Box} from '@mui/material';
+import {sanitizeHTMLMinimal} from '../utils/sanitize';
 import type {RenderLine, SimulationInput} from '../types';
 import {format} from '../formatters';
 import {EditableValue} from './EditableValue';
@@ -75,8 +76,14 @@ export const TableRow: React.FC<TableRowProps> = ({
                     {calcContent && (
                         <>
                             <br/>
-                            <Typography component="span" variant="caption" sx={{color: '#6b7280'}}
-                                        dangerouslySetInnerHTML={{__html: calcContent}}/>
+                            <Typography
+                                component="span"
+                                variant="caption"
+                                sx={{color: '#6b7280'}}
+                                dangerouslySetInnerHTML={{
+                                    __html: sanitizeHTMLMinimal(calcContent)
+                                }}
+                            />
                         </>
                     )}
                 </Typography>

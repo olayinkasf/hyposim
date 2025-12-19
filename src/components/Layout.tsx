@@ -8,7 +8,7 @@ const Layout: React.FC = () => {
     return (
         <Container maxWidth={false} sx={{ bgcolor: '#f3f4f6', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <Header />
-            <Container component="main" sx={{ flexGrow: 1, py: 4 }}>
+            <Container component="main" maxWidth="xl" sx={{ flexGrow: 1, py: 4 }}>
                 <Outlet />
             </Container>
             <Footer />

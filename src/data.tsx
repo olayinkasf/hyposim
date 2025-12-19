@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import type {SimulationInput, SimulationResult, RenderData, AmortizationData} from './types';
 import {format} from './formatters';
 
@@ -98,21 +99,21 @@ const calculateSimulation = (inputs: SimulationInput): SimulationResult => {
     return results;
 };
 
-export const getRenderData = (inputs: SimulationInput): { renderData: RenderData[], results: SimulationResult } => {
+export const getRenderData = (inputs: SimulationInput, t: TFunction): { renderData: RenderData[], results: SimulationResult } => {
     const results = calculateSimulation(inputs);
     const renderData: RenderData[] = [
         // I. PROJECT CAPITAL & ASSET VALUE
         {
-            section: 'I. Project Capital & Asset Value', lines: [
+            section: t('table.section_title'), lines: [
                 {
-                    metric: 'Property Purchase Price',
+                    metric: t('table.property_purchase_price'),
                     value: inputs.purchasePrice,
                     format: 'currency',
                     isInput: true,
                     stateKey: 'purchasePrice'
                 },
                 {
-                    metric: 'Transfer Tax Rate',
+                    metric: t('table.transfer_tax_rate'),
                     value: inputs.taxTransfer,
                     format: 'percent',
                     isInput: true,
@@ -122,7 +123,7 @@ export const getRenderData = (inputs: SimulationInput): { renderData: RenderData
                     evaluatedDisplay: format(results.transferTax, 'currency')
                 },
                 {
-                    metric: 'Notary & Land Registry Rate',
+                    metric: t('table.notary_and_land_registry_rate'),
                     value: inputs.taxNotary,
                     format: 'percent',
                     isInput: true,
@@ -132,7 +133,7 @@ export const getRenderData = (inputs: SimulationInput): { renderData: RenderData
                     evaluatedDisplay: format(results.notaryAndLandRegistryCost, 'currency')
                 },
                 {
-                    metric: 'Broker Commission Rate',
+                    metric: t('table.broker_commission_rate'),
                     value: inputs.taxBroker,
                     format: 'percent',
                     isInput: true,
@@ -142,53 +143,53 @@ export const getRenderData = (inputs: SimulationInput): { renderData: RenderData
                     evaluatedDisplay: format(results.brokerCommission, 'currency')
                 },
                 {
-                    metric: `Total Transfer Cost`,
+                    metric: t('table.total_transfer_cost'),
                     value: results.totalTransactionCosts,
                     format: 'currency',
-                    calc: `Tax + Broker + Notary = ${format(inputs.taxBroker + inputs.taxTransfer + inputs.taxNotary, 'percent')} of Purchase Price`
+                    calc: t('table.total_transfer_cost_calc', {val: format(inputs.taxBroker + inputs.taxTransfer + inputs.taxNotary, 'percent')})
                 },
                 {
-                    metric: 'Renovation Cost',
+                    metric: t('table.renovation_cost'),
                     value: inputs.renovationBudget,
                     format: 'currency',
                     isInput: true,
                     stateKey: 'renovationBudget'
                 },
                 {
-                    metric: 'Total Cost of Property',
+                    metric: t('table.total_cost_of_property'),
                     value: results.totalInvestmentBase,
-                    calc: 'Purchase Price + Renovation',
+                    calc: t('table.total_cost_of_property_calc'),
                     format: 'currency',
                     stateKey: 'purchasePrice'
                 },
                 {
-                    metric: 'Total Cost of Investment',
+                    metric: t('table.total_cost_of_investment'),
                     value: results.totalProjectCost,
                     format: 'currency',
-                    calc: 'Purchase Price + Transfer Cost + Renovation',
+                    calc: t('table.total_cost_of_investment_calc'),
                     color: 'highlight'
                 },
             ]
         },
         // II. EQUITY AND DEBT STRUCTURE
         {
-            section: 'II. Equity and Debt Structure', lines: [
+            section: t('table.section_title_2'), lines: [
                 {
-                    metric: 'Cash Down Payment',
+                    metric: t('table.cash_down_payment'),
                     value: inputs.cashDownPayment,
                     format: 'currency',
                     isInput: true,
                     stateKey: 'cashDownPayment'
                 },
                 {
-                    metric: `Loan Required - ${format(results.loanRequired / (results.totalInvestmentBase || 1), 'percent')} financing`,
+                    metric: t('table.loan_required', {val: format(results.loanRequired / (results.totalInvestmentBase || 1), 'percent')}),
                     value: results.loanRequired,
                     format: 'currency',
-                    calc: 'Total Cost of Investment - Cash Down Payment',
+                    calc: t('table.loan_required_calc'),
                     color: 'highlight'
                 },
                 {
-                    metric: 'Interest Rate - 10 Year Fixed',
+                    metric: t('table.interest_rate'),
                     value: inputs.interestRate,
                     format: 'percent',
                     isInput: true,
@@ -196,88 +197,88 @@ export const getRenderData = (inputs: SimulationInput): { renderData: RenderData
                     isPercent: true
                 },
                 {
-                    metric: 'Amortization Rate',
+                    metric: t('table.amortization_rate'),
                     value: inputs.amortizationRate,
                     format: 'percent',
-                    calc: 'Set by borrower.',
+                    calc: t('table.amortization_rate_calc'),
                     isInput: true,
                     stateKey: 'amortizationRate',
                     isPercent: true
                 },
                 {
-                    metric: 'Total Annual Debt Service Rate',
+                    metric: t('table.total_annual_debt_service_rate'),
                     value: results.annualDebtServiceRate,
                     format: 'percent',
-                    calc: 'Interest Rate + Amortization Rate',
+                    calc: t('table.total_annual_debt_service_rate_calc'),
                     evaluatedDisplay: format(results.annualDebtService, 'currency')
                 },
                 {
-                    metric: 'Monthly Mortgage Payment',
+                    metric: t('table.monthly_mortgage_payment'),
                     value: results.monthlyMortgagePayment,
                     format: 'currency',
-                    calc: 'Annual Debt Service / 12',
+                    calc: t('table.monthly_mortgage_payment_calc'),
                     color: 'highlight'
                 },
             ]
         },
         // III. COST OF OWNERSHIP (Owner-Occupier)
         {
-            section: 'III. Monthly Cost of Ownership', lines: [
+            section: t('table.section_title_3'), lines: [
                 {
-                    metric: 'Monthly Hausgeld',
+                    metric: t('table.monthly_hausgeld'),
                     value: inputs.monthlyHausgeldFull,
                     format: 'currency',
-                    calc: `Full WEG payment.`,
+                    calc: t('table.monthly_hausgeld_calc'),
                     isInput: true,
                     stateKey: 'monthlyHausgeldFull',
                 },
                 {
-                    metric: 'Monthly Rental Income (Sublet)',
+                    metric: t('table.monthly_rental_income'),
                     value: inputs.monthlyRentalIncome,
                     format: 'currency',
-                    calc: 'Income from renting out part of property.',
+                    calc: t('table.monthly_rental_income_calc'),
                     isInput: true,
                     stateKey: 'monthlyRentalIncome',
                     inputHighlight: true,
                     color: "green"
                 },
                 {
-                    metric: 'Monthly Rent Payment',
+                    metric: t('table.monthly_rent_payment'),
                     value: inputs.monthlyExternalRent,
                     format: 'currency',
-                    calc: 'Rent paid for another property (<strong>Cash Out</strong>).',
+                    calc: t('table.monthly_rent_payment_calc'),
                     isInput: true,
                     stateKey: 'monthlyExternalRent',
                     step: '10'
                 },
                 {
-                    metric: 'Desired Monthly Cost of Ownership',
+                    metric: t('table.desired_monthly_cost'),
                     value: inputs.desiredMonthlyCost,
                     format: 'currency',
-                    calc: 'Target monthly cost for comparison.',
+                    calc: t('table.desired_monthly_cost_calc'),
                     isInput: true,
                     stateKey: 'desiredMonthlyCost',
                     inputHighlight: true
                 },
                 {
-                    metric: 'Net Monthly Expense (Cash out)',
+                    metric: t('table.net_monthly_expense'),
                     value: Math.abs(results.monthlyCashFlow),
                     format: 'currency',
-                    calc: results.monthlyCashFlow > 0 ? "Cash in" : 'Cash out',
+                    calc: results.monthlyCashFlow > 0 ? t('table.net_monthly_expense_calc_in') : t('table.net_monthly_expense_calc_out'),
                     color: results.monthlyCashFlow > 0
                         ? 'green' : Math.abs(results.monthlyCashFlow) > inputs.desiredMonthlyCost
                             ? 'red' : 'highlight',
                     evaluatedDisplay: format(Math.abs(results.monthlyCashFlow) * 12 * inputs.yearsToSell, 'currency'),
-                    evaluatedDescription: `after ${inputs.yearsToSell} years`,
+                    evaluatedDescription: t('table.after_years', {val: inputs.yearsToSell}),
                     isCost: true
                 },
             ]
         },
         // IV. LONG-TERM PROJECTION
         {
-            section: 'IV. Long-Term Projection (Asset P&L)', lines: [
+            section: t('table.section_title_4'), lines: [
                 {
-                    metric: `Sell property after ${inputs.yearsToSell} years`,
+                    metric: t('table.sell_property_after_years', {val: inputs.yearsToSell}),
                     value: inputs.yearsToSell,
                     format: 'number',
                     isInput: true,
@@ -285,74 +286,74 @@ export const getRenderData = (inputs: SimulationInput): { renderData: RenderData
                     step: '1'
                 },
                 {
-                    metric: 'Annual Appreciation Rate',
+                    metric: t('table.annual_appreciation_rate'),
                     value: inputs.annualAppreciationRate,
                     format: 'percent',
-                    calc: 'Assumed annual value increase of property',
+                    calc: t('table.annual_appreciation_rate_calc'),
                     isInput: true,
                     stateKey: 'annualAppreciationRate',
                     isPercent: true,
                     inputHighlight: true,
                     evaluatedDisplay: format(results.estimatedSaleValue, 'currency'),
-                    evaluatedDescription: `after ${inputs.yearsToSell} years`
+                    evaluatedDescription: t('table.after_years', {val: inputs.yearsToSell})
                 },
 
                 {
-                    metric: `Total Interest Paid (over ${inputs.yearsToSell} years)`,
+                    metric: t('table.total_interest_paid', {val: inputs.yearsToSell}),
                     value: results.totalInterestPaid,
                     format: 'currency',
-                    calc: 'Total cost of borrowing over the period (<strong>pure loss</strong>).',
+                    calc: t('table.total_interest_paid_calc'),
                     color: results.totalInterestPaid > 0 ? 'red' : undefined
                 },
                 {
-                    metric: `Total Principal Paid (over ${inputs.yearsToSell} years)`,
+                    metric: t('table.total_principal_paid', {val: inputs.yearsToSell}),
                     value: results.totalPrincipalPaid,
                     format: 'currency',
-                    calc: 'The cash converted from debt to <strong>equity</strong>. This is a form of <strong>savings</strong>, not a financial loss.',
+                    calc: t('table.total_principal_paid_calc'),
                 },
                 {
-                    metric: `Loan Balance After ${inputs.yearsToSell} Years`,
+                    metric: t('table.loan_balance_after_years', {val: inputs.yearsToSell}),
                     value: results.loanBalanceAtSale,
                     format: 'currency',
-                    calc: 'Loan Required - Total Principal Paid'
+                    calc: t('table.loan_balance_after_years_calc')
                 },
                 {
-                    metric: 'Total Cash Out',
+                    metric: t('table.total_cash_out'),
                     value: inputs.cashDownPayment + results.totalAnnualCost * inputs.yearsToSell,
                     format: 'currency',
-                    calc: 'Cash Down Payment + Total Cost of Ownership',
+                    calc: t('table.total_cash_out_calc'),
                     color: 'red',
                     isCost: true
                 },
                 {
-                    metric: 'Total Cash Lost',
+                    metric: t('table.total_cash_lost'),
                     value: inputs.cashDownPayment + results.totalAnnualCost * inputs.yearsToSell - results.totalPrincipalPaid,
                     format: 'currency',
-                    calc: 'Total Cash Out - Total Principal Paid',
+                    calc: t('table.total_cash_lost_calc'),
                     color: 'red',
                     isCost: true
                 },
                 {
-                    metric: 'Net Sale Proceeds',
+                    metric: t('table.net_sale_proceeds'),
                     value: results.netSaleProceeds,
                     format: 'currency',
-                    calc: 'Estimated Sale Value - Loan Balance After X Years. <strong>Total Principal Paid</strong> reduces the loan balance, thus increasing your <strong>cash inflow</strong>.',
+                    calc: t('table.net_sale_proceeds_calc'),
                     color: 'green',
                     flow: true
                 },
                 {
-                    metric: 'Total Net Wealth Change (Asset P&L)',
+                    metric: t('table.total_net_wealth_change'),
                     value: results.netProceeds,
                     format: 'currency',
-                    calc: 'Net Sale Proceeds - Total Cash Lost',
+                    calc: t('table.total_net_wealth_change_calc'),
                     color: results.netProceeds > 0 ? 'green' : 'red',
                     flow: true
                 },
                 {
-                    metric: 'Fully Repaid After Years',
+                    metric: t('table.fully_repaid_after_years'),
                     value: typeof results.repaymentYears === 'number' ? results.repaymentYears : 0,
                     format: 'number',
-                    calc: 'Loan  Required amortization time at Monthly Mortgage Payment',
+                    calc: t('table.fully_repaid_after_years_calc'),
                     color: 'yellow'
                 },
             ]

@@ -1,0 +1,253 @@
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
+
+i18n
+    .use(LanguageDetector)
+    .use(initReactI18next)
+    .init({
+        fallbackLng: 'en',
+        interpolation: {
+            escapeValue: false, // not needed for react as it escapes by default
+        },
+        detection: {
+            order: ['cookie', 'navigator'],
+            caches: ['cookie'],
+            cookieMinutes: 30 * 24 * 60, // 30 days
+            cookieOptions: { path: '/' }
+        },
+        resources: {
+            en: {
+                translation: {
+                    "header": {
+                        "title": "HypoSim Deutschland",
+                        "subtitle": "Owner-Occupier Cost & Equity Simulator"
+                    },
+                    "rightSection": {
+                        "title": "Principal: A Closer Look at Cash Out vs. Cash Lost",
+                        "explanation": "Your <1>Total Cash Out</1> includes the <3>Total Principal Paid</3>. This is because principal payments are cash that has left your liquid assets and been invested into the property. While this portion of your cash out is not permanently lost (it is converted into home equity and is returned to you in the <7>Net Sale Proceeds</7>), it is also not available for other investments during the holding period. The <11>Total Interest Paid</11> and other running costs, on the other hand, represent the 'cash lost' portion of your investment."
+                    },
+                    "table": {
+                        "section_title": "I. Project Capital & Asset Value",
+                        "property_purchase_price": "Property Purchase Price",
+                        "transfer_tax_rate": "Transfer Tax Rate",
+                        "notary_and_land_registry_rate": "Notary & Land Registry Rate",
+                        "broker_commission_rate": "Broker Commission Rate",
+                        "total_transfer_cost": "Total Transfer Cost",
+                        "total_transfer_cost_calc": "Tax + Broker + Notary = {{val}} of Purchase Price",
+                        "renovation_cost": "Renovation Cost",
+                        "total_cost_of_property": "Total Cost of Property",
+                        "total_cost_of_property_calc": "Purchase Price + Renovation",
+                        "total_cost_of_investment": "Total Cost of Investment",
+                        "total_cost_of_investment_calc": "Purchase Price + Transfer Cost + Renovation",
+                        "section_title_2": "II. Equity and Debt Structure",
+                        "cash_down_payment": "Cash Down Payment",
+                        "loan_required": "Loan Required - {{val}} financing",
+                        "loan_required_calc": "Total Cost of Investment - Cash Down Payment",
+                        "interest_rate": "Interest Rate - 10 Year Fixed",
+                        "amortization_rate": "Amortization Rate",
+                        "amortization_rate_calc": "Set by borrower.",
+                        "total_annual_debt_service_rate": "Total Annual Debt Service Rate",
+                        "total_annual_debt_service_rate_calc": "Interest Rate + Amortization Rate",
+                        "monthly_mortgage_payment": "Monthly Mortgage Payment",
+                        "monthly_mortgage_payment_calc": "Annual Debt Service / 12",
+                        "section_title_3": "III. Monthly Cost of Ownership",
+                        "monthly_hausgeld": "Monthly Hausgeld",
+                        "monthly_hausgeld_calc": "Full WEG payment.",
+                        "monthly_rental_income": "Monthly Rental Income (Sublet)",
+                        "monthly_rental_income_calc": "Income from renting out part of property.",
+                        "monthly_rent_payment": "Monthly Rent Payment",
+                        "monthly_rent_payment_calc": "Rent paid for another property (<strong>Cash Out</strong>).",
+                        "desired_monthly_cost": "Desired Monthly Cost of Ownership",
+                        "desired_monthly_cost_calc": "Target monthly cost for comparison.",
+                        "net_monthly_expense": "Net Monthly Expense (Cash out)",
+                        "net_monthly_expense_calc_in": "Cash in",
+                        "net_monthly_expense_calc_out": "Cash out",
+                        "after_years": "after {{val}} years",
+                        "section_title_4": "IV. Long-Term Projection (Asset P&L)",
+                        "sell_property_after_years": "Sell property after {{val}} years",
+                        "annual_appreciation_rate": "Annual Appreciation Rate",
+                        "annual_appreciation_rate_calc": "Assumed annual value increase of property",
+                        "total_interest_paid": "Total Interest Paid (over {{val}} years)",
+                        "total_interest_paid_calc": "Total cost of borrowing over the period (<strong>pure loss</strong>).",
+                        "total_principal_paid": "Total Principal Paid (over {{val}} years)",
+                        "total_principal_paid_calc": "The cash converted from debt to <strong>equity</strong>. This is a form of <strong>savings</strong>, not a financial loss.",
+                        "loan_balance_after_years": "Loan Balance After {{val}} Years",
+                        "loan_balance_after_years_calc": "Loan Required - Total Principal Paid",
+                        "total_cash_out": "Total Cash Out",
+                        "total_cash_out_calc": "Cash Down Payment + Total Cost of Ownership",
+                        "total_cash_lost": "Total Cash Lost",
+                        "total_cash_lost_calc": "Total Cash Out - Total Principal Paid",
+                        "net_sale_proceeds": "Net Sale Proceeds",
+                        "net_sale_proceeds_calc": "Estimated Sale Value - Loan Balance After X Years. <strong>Total Principal Paid</strong> reduces the loan balance, thus increasing your <strong>cash inflow</strong>.",
+                        "total_net_wealth_change": "Total Net Wealth Change (Asset P&L)",
+                        "total_net_wealth_change_calc": "Net Sale Proceeds - Total Cash Lost",
+                        "fully_repaid_after_years": "Fully Repaid After Years",
+                        "fully_repaid_after_years_calc": "Loan Required amortization time at Monthly Mortgage Payment"
+                    },
+                    "disclaimer": {
+                        "title": "Important Disclaimer",
+                        "purpose": "This tool is for <strong>educational and informational purposes only</strong>. It is not financial advice, legal advice, or tax advice.",
+                        "defaults": "<strong>Default values (like tax rates) are estimates for Berlin</strong> and may not apply to your specific situation or location. Real estate laws and tax rates are subject to change.",
+                        "privacy": "<strong>No Data is Stored:</strong> This application runs entirely in your browser. No personal financial data is sent to any server.",
+                        "accept": "I Understand & Accept"
+                    },
+                    "summary": {
+                        "title": "Cost of Ownership Summary (Monthly)",
+                        "mortgage_payment": "Monthly Mortgage Payment",
+                        "running_costs": "Total Monthly Running Costs (Monthly Hausgeld)",
+                        "total_cost": "Monthly Cost of Ownership"
+                    },
+                    "breakdown": {
+                        "title": "First Monthly Mortgage Payment Breakdown",
+                        "description": "This shows how the <strong>Total Monthly Payment</strong> is initially divided between the cost of borrowing (Interest) and debt reduction (Principal). This division changes every month.",
+                        "total_payment": "Total Monthly Payment",
+                        "interest": "Interest (Cost of Borrowing)",
+                        "principal": "Principal (Debt Reduction)"
+                    },
+                    "amortization": {
+                        "title": "Monthly Amortization Schedule ({{years}} Years)",
+                        "show": "▼ Show Details",
+                        "hide": "▲ Hide Details",
+                        "yearly_view": "Yearly View",
+                        "monthly_view": "Monthly View",
+                        "year": "Year",
+                        "month": "Month",
+                        "interest_paid": "Interest Paid",
+                        "principal_paid": "Principal Paid",
+                        "remaining_balance": "Remaining Balance"
+                    },
+                    "footer": {
+                        "last_updated": "Last Updated: {{date}}",
+                        "legal_notice": "Impressum (Legal Notice)",
+                        "privacy_policy": "Datenschutzerklärung (Privacy Policy)"
+                    },
+                    "impressum": {
+                        "title": "Impressum (Legal Notice)",
+                        "content": "<h2>Information according to § 5 TMG</h2><p><strong>HypoSim Deutschland</strong><br/>Owner-Occupier Cost & Equity Simulator</p><h3>Contact</h3><p>Email: info@hyposim.de</p><h3>Disclaimer</h3><p><strong>Liability for Content</strong><br/>The contents of our pages have been created with the utmost care. However, we cannot guarantee the contents' accuracy, completeness or topicality. According to statutory provisions, we are furthermore responsible for our own content on these web pages. In this matter, please note that we are not obliged to monitor the transmitted or saved information of third parties, or investigate circumstances pointing to illegal activity.</p><p><strong>Liability for Links</strong><br/>Our offer contains links to external third party websites. We have no influence on the contents of those websites, therefore we cannot guarantee for those contents. Providers or administrators of linked websites are always responsible for their own contents.</p><p><strong>Copyright</strong><br/>The content and works published on this website are governed by the copyright laws of Germany. Any duplication, processing, distribution or any form of utilisation beyond the scope of copyright law shall require the prior written consent of the author or authors in question.</p>"
+                    },
+                    "privacy": {
+                        "title": "Privacy Policy",
+                        "content": "<h2>Data Protection</h2><p>We take the protection of your personal data very seriously. We treat your personal data confidentially and according to the statutory data protection regulations and this privacy policy.</p><h3>Cookies</h3><p>This website uses cookies. Cookies are text files that are stored on your computer and which enable an analysis of your use of the website. The information generated by the cookie about your use of this website is usually transmitted to a server and stored there.</p><p>This website uses the following cookies:</p><ul><li><strong>Disclaimer acceptance cookie:</strong> Stores whether you have accepted our disclaimer (expires after 30 days)</li><li><strong>Language preference cookie:</strong> Stores your language selection for the website (expires after 30 days)</li></ul><h3>Local Data Processing</h3><p>All calculations performed on this website happen entirely in your browser. No financial data you enter (purchase prices, loan amounts, personal financial information) is transmitted to our servers or any third party. Your financial data remains completely private and on your device.</p><h3>No Analytics or Tracking</h3><p>This website does not use Google Analytics, tracking pixels, or any other analytics or tracking services. We do not collect, store, or analyze your browsing behavior or personal information.</p><h3>Your Rights</h3><p>You have the right to information, correction, deletion, restriction, data portability, revocation and objection. If you believe that the processing of your data violates data protection law or your data protection rights have been violated in any other way, you can complain to the supervisory authority.</p>"
+                    }
+                }
+            },
+            de: {
+                translation: {
+                    "header": {
+                        "title": "HypoSim Deutschland",
+                        "subtitle": "Kosten- und Eigenkapitalsimulator für Eigennutzer"
+                    },
+                    "rightSection": {
+                        "title": "Prinzipal: Ein genauerer Blick auf Cash Out vs. Cash Lost",
+                        "explanation": "Ihr <1>Gesamtauszahlungsbetrag</1> beinhaltet die <3>gesamte Tilgung</3>. Das liegt daran, dass Tilgungszahlungen Bargeld sind, das Ihre liquiden Mittel verlassen hat und in die Immobilie investiert wurde. Während dieser Teil Ihrer Auszahlung nicht dauerhaft verloren ist (er wird in Eigenkapital umgewandelt und Ihnen im <7>Netto-Verkaufserlös</7> zurückgegeben), steht er während der Haltedauer auch nicht für andere Investitionen zur Verfügung. Die <11>gezahlten Gesamtzinsen</11> und andere laufende Kosten stellen hingegen den 'verlorenen Geldbetrag' Ihrer Investition dar."
+                    },
+                    "table": {
+                        "section_title": "I. Projektkapital & Vermögenswert",
+                        "property_purchase_price": "Kaufpreis der Immobilie",
+                        "transfer_tax_rate": "Grunderwerbsteuersatz",
+                        "notary_and_land_registry_rate": "Notar- und Grundbuchgeühren",
+                        "broker_commission_rate": "Maklerprovision",
+                        "total_transfer_cost": "Gesamte Übertragungskosten",
+                        "total_transfer_cost_calc": "Steuer + Makler + Notar = {{val}} des Kaufpreises",
+                        "renovation_cost": "Renovierungskosten",
+                        "total_cost_of_property": "Gesamtkosten der Immobilie",
+                        "total_cost_of_property_calc": "Kaufpreis + Renovierung",
+                        "total_cost_of_investment": "Gesamtinvestitionskosten",
+                        "total_cost_of_investment_calc": "Kaufpreis + Übertragungskosten + Renovierung",
+                        "section_title_2": "II. Eigenkapital- und Schuldenstruktur",
+                        "cash_down_payment": "Anzahlung",
+                        "loan_required": "Benötigtes Darlehen - {{val}} Finanzierung",
+                        "loan_required_calc": "Gesamtinvestitionskosten - Anzahlung",
+                        "interest_rate": "Zinssatz - 10 Jahre fest",
+                        "amortization_rate": "Tilgungsrate",
+                        "amortization_rate_calc": "Festgelegt vom Kreditnehmer.",
+                        "total_annual_debt_service_rate": "Gesamter jährlicher Schuldendienstsatz",
+                        "total_annual_debt_service_rate_calc": "Zinssatz + Tilgungsrate",
+                        "monthly_mortgage_payment": "Monatliche Hypothekenzahlung",
+                        "monthly_mortgage_payment_calc": "Jährlicher Schuldendienst / 12",
+                        "section_title_3": "III. Monatliche Betriebskosten",
+                        "monthly_hausgeld": "Monatliches Hausgeld",
+                        "monthly_hausgeld_calc": "Volle WEG-Zahlung.",
+                        "monthly_rental_income": "Monatliche Mieteinnahmen (Untervermietung)",
+                        "monthly_rental_income_calc": "Einnahmen aus der Vermietung eines Teils der Immobilie.",
+                        "monthly_rent_payment": "Monatliche Mietzahlung",
+                        "monthly_rent_payment_calc": "Miete für eine andere Immobilie (<strong>Cash Out</strong>).",
+                        "desired_monthly_cost": "Gewünschte monatliche Kosten",
+                        "desired_monthly_cost_calc": "Zielmonatliche Kosten zum Vergleich.",
+                        "net_monthly_expense": "Netto-Monatsaufwand (Cash out)",
+                        "net_monthly_expense_calc_in": "Geldeingang",
+                        "net_monthly_expense_calc_out": "Geldausgang",
+                        "after_years": "nach {{val}} Jahren",
+                        "section_title_4": "IV. Langfristige Prognose (GuV des Vermögens)",
+                        "sell_property_after_years": "Immobilie nach {{val}} Jahren verkaufen",
+                        "annual_appreciation_rate": "Jährliche Wertsteigerungsrate",
+                        "annual_appreciation_rate_calc": "Angenommene jährliche Wertsteigerung der Immobilie",
+                        "total_interest_paid": "Gezahlte Gesamtzinsen (über {{val}} Jahre)",
+                        "total_interest_paid_calc": "Gesamtkosten der Kreditaufnahme über den Zeitraum (<strong>reiner Verlust</strong>).",
+                        "total_principal_paid": "Gezahlte Gesamttilgung (über {{val}} Jahre)",
+                        "total_principal_paid_calc": "Das von Schulden in <strong>Eigenkapital</strong> umgewandelte Bargeld. Dies ist eine Form des <strong>Sparens</strong>, kein finanzieller Verlust.",
+                        "loan_balance_after_years": "Darlehenssaldo nach {{val}} Jahren",
+                        "loan_balance_after_years_calc": "Benötigtes Darlehen - Gezahlte Gesamttilgung",
+                        "total_cash_out": "Gesamtauszahlung",
+                        "total_cash_out_calc": "Anzahlung + Gesamtkosten des Besitzes",
+                        "total_cash_lost": "Verlorenes Gesamtkapital",
+                        "total_cash_lost_calc": "Gesamtauszahlung - Gezahlte Gesamttilgung",
+                        "net_sale_proceeds": "Netto-Verkaufserlös",
+                        "net_sale_proceeds_calc": "Geschätzter Verkaufswert - Darlehenssaldo nach X Jahren. Die <strong>gezahlte Gesamttilgung</strong> reduziert den Darlehenssaldo und erhöht so Ihren <strong>Geldzufluss</strong>.",
+                        "total_net_wealth_change": "Gesamtvermögensänderung (GuV des Vermögens)",
+                        "total_net_wealth_change_calc": "Netto-Verkaufserlös - Verlorenes Gesamtkapital",
+                        "fully_repaid_after_years": "Vollständig zurückgezahlt nach Jahren",
+                        "fully_repaid_after_years_calc": "Erforderliche Tilgungszeit des Darlehens bei monatlicher Hypothekenzahlung"
+                    },
+                    "disclaimer": {
+                        "title": "Wichtiger Haftungsausschluss",
+                        "purpose": "Dieses Tool dient <strong>ausschließlich zu Bildungs- und Informationszwecken</strong>. Es ist keine Finanzberatung, Rechtsberatung oder Steuerberatung.",
+                        "defaults": "<strong>Standardwerte (wie Steuersätze) sind Schätzungen für Berlin</strong> und gelten möglicherweise nicht für Ihre spezifische Situation oder Ihren Standort. Immobiliengesetze und Steuersätze können sich ändern.",
+                        "privacy": "<strong>Keine Datenspeicherung:</strong> Diese Anwendung läuft vollständig in Ihrem Browser. Es werden keine persönlichen Finanzdaten an einen Server gesendet.",
+                        "accept": "Ich verstehe und akzeptiere"
+                    },
+                    "summary": {
+                        "title": "Kostenübersicht Eigennutzung (Monatlich)",
+                        "mortgage_payment": "Monatliche Hypothekenzahlung",
+                        "running_costs": "Gesamte monatliche Betriebskosten (Monatliches Hausgeld)",
+                        "total_cost": "Monatliche Kosten des Besitzes"
+                    },
+                    "breakdown": {
+                        "title": "Erste monatliche Hypothekenzahlungsaufteilung",
+                        "description": "Dies zeigt, wie die <strong>gesamte monatliche Zahlung</strong> anfänglich zwischen den Kreditkosten (Zinsen) und der Schuldenreduzierung (Tilgung) aufgeteilt wird. Diese Aufteilung ändert sich jeden Monat.",
+                        "total_payment": "Gesamte monatliche Zahlung",
+                        "interest": "Zinsen (Kreditkosten)",
+                        "principal": "Tilgung (Schuldenreduzierung)"
+                    },
+                    "amortization": {
+                        "title": "Monatlicher Tilgungsplan ({{years}} Jahre)",
+                        "show": "▼ Details anzeigen",
+                        "hide": "▲ Details ausblenden",
+                        "yearly_view": "Jahresansicht",
+                        "monthly_view": "Monatsansicht",
+                        "year": "Jahr",
+                        "month": "Monat",
+                        "interest_paid": "Gezahlte Zinsen",
+                        "principal_paid": "Gezahlte Tilgung",
+                        "remaining_balance": "Verbleibender Saldo"
+                    },
+                    "footer": {
+                        "last_updated": "Zuletzt aktualisiert: {{date}}",
+                        "legal_notice": "Impressum",
+                        "privacy_policy": "Datenschutzerklärung"
+                    },
+                    "impressum": {
+                        "title": "Impressum",
+                        "content": "<h2>Angaben gemäß § 5 TMG</h2><p><strong>HypoSim Deutschland</strong><br/>Kosten- und Eigenkapitalsimulator für Eigennutzer</p><h3>Kontakt</h3><p>E-Mail: info@hyposim.de</p><h3>Haftungsausschluss</h3><p><strong>Haftung für Inhalte</strong><br/>Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.</p><p><strong>Haftung für Links</strong><br/>Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich.</p><p><strong>Urheberrecht</strong><br/>Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.</p>"
+                    },
+                    "privacy": {
+                        "title": "Datenschutzerklärung",
+                        "content": "<h2>Datenschutz</h2><p>Wir nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend der gesetzlichen Datenschutzvorschriften sowie dieser Datenschutzerklärung.</p><h3>Cookies</h3><p>Diese Website verwendet Cookies. Cookies sind Textdateien, die auf Ihrem Computer gespeichert werden und die eine Analyse der Benutzung der Website durch Sie ermöglichen. Die durch den Cookie erzeugten Informationen über Ihre Benutzung dieser Website werden in der Regel an einen Server übertragen und dort gespeichert.</p><p>Diese Website verwendet folgende Cookies:</p><ul><li><strong>Haftungsausschluss-Cookie:</strong> Speichert, ob Sie unseren Haftungsausschluss akzeptiert haben (läuft nach 30 Tagen ab)</li><li><strong>Spracheinstellungs-Cookie:</strong> Speichert Ihre Sprachauswahl für die Website (läuft nach 30 Tagen ab)</li></ul><h3>Lokale Datenverarbeitung</h3><p>Alle auf dieser Website durchgeführten Berechnungen erfolgen vollständig in Ihrem Browser. Keine von Ihnen eingegebenen Finanzdaten (Kaufpreise, Kreditbeträge, persönliche Finanzinformationen) werden an unsere Server oder Dritte übertragen. Ihre Finanzdaten bleiben vollständig privat und auf Ihrem Gerät.</p><h3>Keine Analysen oder Tracking</h3><p>Diese Website verwendet weder Google Analytics, Tracking-Pixel noch andere Analyse- oder Tracking-Dienste. Wir erfassen, speichern oder analysieren Ihr Surfverhalten oder persönliche Informationen nicht.</p><h3>Ihre Rechte</h3><p>Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung, Datenübertragbarkeit, Widerruf und Widerspruch. Wenn Sie glauben, dass die Verarbeitung Ihrer Daten gegen das Datenschutzrecht verstößt oder Ihre datenschutzrechtlichen Ansprüche sonst in einer Weise verletzt worden sind, können Sie sich bei der Aufsichtsbehörde beschweren.</p>"
+                    }
+                }
+            }
+        }
+    });
+
+export default i18n;

@@ -5,6 +5,7 @@ import App from './App.tsx';
 import Impressum from './components/Impressum.tsx';
 import Privacy from './components/Privacy.tsx';
 import Layout from './components/Layout.tsx';
+import './i18n';
 
 const router = createBrowserRouter([
   {
