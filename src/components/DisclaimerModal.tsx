@@ -13,7 +13,6 @@ export const DisclaimerModal = ({ open, onClose }: DisclaimerModalProps) => {
     return (
         <Modal
             open={open}
-            onClose={onClose}
             aria-labelledby="disclaimer-modal-title"
             aria-describedby="disclaimer-modal-description"
         >
@@ -52,6 +51,11 @@ export const DisclaimerModal = ({ open, onClose }: DisclaimerModalProps) => {
                 <Typography>
                     <Trans i18nKey="disclaimer.privacy">
                         <strong>No Data is Stored:</strong> This application runs entirely in your browser. No personal financial data is sent to any server.
+                    </Trans>
+                </Typography>
+                <Typography>
+                    <Trans i18nKey="disclaimer.cookies">
+                        <strong>Cookies:</strong> We use cookies only to save your disclaimer acceptance and language preference.
                     </Trans>
                 </Typography>
                 <Button

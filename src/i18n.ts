@@ -92,6 +92,7 @@ i18n
                         "purpose": "This tool is for <strong>educational and informational purposes only</strong>. It is not financial advice, legal advice, or tax advice.",
                         "defaults": "<strong>Default values (like tax rates) are estimates for Berlin</strong> and may not apply to your specific situation or location. Real estate laws and tax rates are subject to change.",
                         "privacy": "<strong>No Data is Stored:</strong> This application runs entirely in your browser. No personal financial data is sent to any server.",
+                        "cookies": "<strong>Cookies:</strong> We use cookies only to save your disclaimer acceptance and language preference.",
                         "accept": "I Understand & Accept"
                     },
                     "summary": {
@@ -209,6 +210,7 @@ i18n
                         "purpose": "Dieses Tool dient <strong>ausschließlich zu Bildungs- und Informationszwecken</strong>. Es ist keine Finanzberatung, Rechtsberatung oder Steuerberatung.",
                         "defaults": "<strong>Standardwerte (wie Steuersätze) sind Schätzungen für Berlin</strong> und gelten möglicherweise nicht für Ihre spezifische Situation oder Ihren Standort. Immobiliengesetze und Steuersätze können sich ändern.",
                         "privacy": "<strong>Keine Datenspeicherung:</strong> Diese Anwendung läuft vollständig in Ihrem Browser. Es werden keine persönlichen Finanzdaten an einen Server gesendet.",
+                        "cookies": "<strong>Cookies:</strong> Wir verwenden Cookies nur, um Ihre Zustimmung zum Haftungsausschluss und Ihre Spracheinstellung zu speichern.",
                         "accept": "Ich verstehe und akzeptiere"
                     },
                     "summary": {
