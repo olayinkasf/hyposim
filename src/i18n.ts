@@ -1,5 +1,5 @@
 import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
+import {initReactI18next} from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
 i18n
@@ -14,7 +14,7 @@ i18n
             order: ['cookie', 'navigator'],
             caches: ['cookie'],
             cookieMinutes: 30 * 24 * 60, // 30 days
-            cookieOptions: { path: '/' }
+            cookieOptions: {path: '/'}
         },
         resources: {
             en: {
@@ -58,8 +58,8 @@ i18n
                         "monthly_rental_income_calc": "Income from renting out part of property.",
                         "monthly_rent_payment": "Monthly Rent Payment",
                         "monthly_rent_payment_calc": "Rent paid for another property (<strong>Cash Out</strong>).",
-                        "desired_monthly_cost": "Desired Monthly Cost of Ownership",
-                        "desired_monthly_cost_calc": "Target monthly cost for comparison.",
+                        "monthly_rent_avoided": "Monthly Rent Avoided",
+                        "monthly_rent_avoided_calc": "Rent you would pay if you did not own this property.",
                         "net_monthly_expense": "Net Monthly Expense (Cash out)",
                         "net_monthly_expense_calc_in": "Cash in",
                         "net_monthly_expense_calc_out": "Cash out",
@@ -78,6 +78,8 @@ i18n
                         "total_cash_out_calc": "Cash Down Payment + Total Cost of Ownership",
                         "total_cash_lost": "Total Cash Lost",
                         "total_cash_lost_calc": "Total Cash Out - Total Principal Paid",
+                        "total_rent_avoided": "Total Rent Avoided (over {{val}} years)",
+                        "total_rent_avoided_calc": "Total rent payments saved by owning the property.",
                         "net_sale_proceeds": "Net Sale Proceeds",
                         "net_sale_proceeds_calc": "Estimated Sale Value - Loan Balance After X Years. <strong>Total Principal Paid</strong> reduces the loan balance, thus increasing your <strong>cash inflow</strong>.",
                         "total_net_wealth_change": "Total Net Wealth Change (Asset P&L)",
@@ -119,11 +121,11 @@ i18n
                     },
                     "footer": {
                         "last_updated": "Last Updated: {{date}}",
-                        "legal_notice": "Impressum (Legal Notice)",
-                        "privacy_policy": "Datenschutzerklärung (Privacy Policy)"
+                        "legal_notice": "Legal Notice",
+                        "privacy_policy": "Privacy Policy"
                     },
                     "impressum": {
-                        "title": "Impressum (Legal Notice)",
+                        "title": "Legal Notice",
                         "content": "<h2>Information according to § 5 TMG</h2><p><strong>HypoSim Deutschland</strong><br/>Owner-Occupier Cost & Equity Simulator</p><h3>Contact</h3><p>Email: info@hyposim.de</p><h3>Disclaimer</h3><p><strong>Liability for Content</strong><br/>The contents of our pages have been created with the utmost care. However, we cannot guarantee the contents' accuracy, completeness or topicality. According to statutory provisions, we are furthermore responsible for our own content on these web pages. In this matter, please note that we are not obliged to monitor the transmitted or saved information of third parties, or investigate circumstances pointing to illegal activity.</p><p><strong>Liability for Links</strong><br/>Our offer contains links to external third party websites. We have no influence on the contents of those websites, therefore we cannot guarantee for those contents. Providers or administrators of linked websites are always responsible for their own contents.</p><p><strong>Copyright</strong><br/>The content and works published on this website are governed by the copyright laws of Germany. Any duplication, processing, distribution or any form of utilisation beyond the scope of copyright law shall require the prior written consent of the author or authors in question.</p>"
                     },
                     "privacy": {
@@ -173,8 +175,8 @@ i18n
                         "monthly_rental_income_calc": "Einnahmen aus der Vermietung eines Teils der Immobilie.",
                         "monthly_rent_payment": "Monatliche Mietzahlung",
                         "monthly_rent_payment_calc": "Miete für eine andere Immobilie (<strong>Cash Out</strong>).",
-                        "desired_monthly_cost": "Gewünschte monatliche Kosten",
-                        "desired_monthly_cost_calc": "Zielmonatliche Kosten zum Vergleich.",
+                        "monthly_rent_avoided": "Monatlich vermiedene Miete",
+                        "monthly_rent_avoided_calc": "Miete, die Sie zahlen müssten, wenn Sie diese Immobilie nicht besitzen würden.",
                         "net_monthly_expense": "Netto-Monatsaufwand (Cash out)",
                         "net_monthly_expense_calc_in": "Geldeingang",
                         "net_monthly_expense_calc_out": "Geldausgang",
@@ -193,6 +195,8 @@ i18n
                         "total_cash_out_calc": "Anzahlung + Gesamtkosten des Besitzes",
                         "total_cash_lost": "Verlorenes Gesamtkapital",
                         "total_cash_lost_calc": "Gesamtauszahlung - Gezahlte Gesamttilgung",
+                        "total_rent_avoided": "Gesamte vermiedene Miete (über {{val}} Jahre)",
+                        "total_rent_avoided_calc": "Gesamte Mietzahlungen, die durch den Eigentumserwerb eingespart wurden.",
                         "net_sale_proceeds": "Netto-Verkaufserlös",
                         "net_sale_proceeds_calc": "Geschätzter Verkaufswert - Darlehenssaldo nach X Jahren. Die <strong>gezahlte Gesamttilgung</strong> reduziert den Darlehenssaldo und erhöht so Ihren <strong>Geldzufluss</strong>.",
                         "total_net_wealth_change": "Gesamtvermögensänderung (GuV des Vermögens)",

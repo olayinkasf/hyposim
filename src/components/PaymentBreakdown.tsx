@@ -41,9 +41,10 @@ export const PaymentBreakdown: React.FC<PaymentBreakdownProps> = ({ results }) =
                     This shows how the <strong>Total Monthly Payment</strong> is initially divided between the cost of borrowing (Interest) and debt reduction (Principal). This division changes every month.
                 </Trans>
             </Typography>
-            <Box sx={{ display: 'flex', gap: spacing.md, flexDirection: { xs: 'column', md: 'row' } }}>
-                <Box sx={{ flex: 1 }}>
+            <Box sx={{ display: 'flex', gap: spacing.md, flexDirection: { xs: 'column', md: 'row' }, alignItems: 'stretch' }}>
+                <Box sx={{ flex: 1, display: 'flex' }}>
                     <Card sx={{
+                        flex: 1,
                         boxShadow: elevation[1],
                         borderRadius: borderRadius.md,
                         transition: `all ${transitions.normal}`,
@@ -70,8 +71,9 @@ export const PaymentBreakdown: React.FC<PaymentBreakdownProps> = ({ results }) =
                         </CardContent>
                     </Card>
                 </Box>
-                <Box sx={{ flex: 1 }}>
+                <Box sx={{ flex: 1, display: 'flex' }}>
                     <Card sx={{
+                        flex: 1,
                         bgcolor: colors.error[50],
                         border: `2px solid ${colors.error[200]}`,
                         boxShadow: elevation[1],
@@ -100,8 +102,9 @@ export const PaymentBreakdown: React.FC<PaymentBreakdownProps> = ({ results }) =
                         </CardContent>
                     </Card>
                 </Box>
-                <Box sx={{ flex: 1 }}>
+                <Box sx={{ flex: 1, display: 'flex' }}>
                     <Card sx={{
+                        flex: 1,
                         bgcolor: colors.success[50],
                         border: `2px solid ${colors.success[200]}`,
                         boxShadow: elevation[1],

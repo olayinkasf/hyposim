@@ -20,9 +20,8 @@ const initialInputs: SimulationInput = {
     monthlyHausgeldFull: 295.73,
     monthlyRentalIncome: 1000.00,
 
-    desiredMonthlyCost: 1500.00,
-
     monthlyExternalRent: 0.00,
+    monthlyRentAvoided: 0.00,
     yearsToSell: 10,
     annualAppreciationRate: 0.020,
 };
@@ -57,7 +56,7 @@ export const useSimulation = () => {
             case 'monthlyHausgeldFull':
             case 'monthlyRentalIncome':
             case 'monthlyExternalRent':
-            case 'desiredMonthlyCost':
+            case 'monthlyRentAvoided':
                 return clamp(value, 0, 100000000);
 
             // Tax and rate percentages: 0% to 100% (stored as decimals)

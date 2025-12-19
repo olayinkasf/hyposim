@@ -10,8 +10,8 @@ export interface SimulationInput {
     propertySizeSqm: number;
     monthlyHausgeldFull: number;
     monthlyRentalIncome: number;
-    desiredMonthlyCost: number;
     monthlyExternalRent: number;
+    monthlyRentAvoided: number;
     yearsToSell: number;
     annualAppreciationRate: number;
 }
@@ -46,6 +46,7 @@ export interface SimulationResult {
     totalRunningCostPeriod: number;
     totalRentalIncomePeriod: number;
     totalExternalRentPeriod: number;
+    totalRentAvoidedPeriod: number;
     totalCashOut: number;
     netSaleProceeds: number;
     netProceeds: number;

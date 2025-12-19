@@ -33,9 +33,10 @@ export const Summary: React.FC<SummaryProps> = ({ results, inputs }) => {
             >
                 {t('summary.title')}
             </Typography>
-            <Box sx={{ display: 'flex', gap: spacing.md, flexDirection: { xs: 'column', md: 'row' } }}>
-                <Box sx={{ flex: 1 }}>
+            <Box sx={{ display: 'flex', gap: spacing.md, flexDirection: { xs: 'column', md: 'row' }, alignItems: 'stretch' }}>
+                <Box sx={{ flex: 1, display: 'flex' }}>
                     <Card sx={{
+                        flex: 1,
                         boxShadow: elevation[1],
                         borderRadius: borderRadius.md,
                         transition: `all ${transitions.normal}`,
@@ -58,8 +59,9 @@ export const Summary: React.FC<SummaryProps> = ({ results, inputs }) => {
                         </CardContent>
                     </Card>
                 </Box>
-                <Box sx={{ flex: 1 }}>
+                <Box sx={{ flex: 1, display: 'flex' }}>
                     <Card sx={{
+                        flex: 1,
                         boxShadow: elevation[1],
                         borderRadius: borderRadius.md,
                         transition: `all ${transitions.normal}`,
@@ -82,8 +84,9 @@ export const Summary: React.FC<SummaryProps> = ({ results, inputs }) => {
                         </CardContent>
                     </Card>
                 </Box>
-                <Box sx={{ flex: 1 }}>
+                <Box sx={{ flex: 1, display: 'flex' }}>
                     <Card sx={{
+                        flex: 1,
                         bgcolor: colors.warning[100],
                         border: `2px solid ${colors.warning[300]}`,
                         boxShadow: elevation[2],

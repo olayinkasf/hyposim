@@ -78,6 +78,8 @@ const calculateSimulation = (inputs: SimulationInput): SimulationResult => {
     results.totalRentalIncomePeriod = results.annualRentalIncome * inputs.yearsToSell;
     // New: Total External Rent Period
     results.totalExternalRentPeriod = results.annualExternalRent * inputs.yearsToSell;
+    // New: Total Rent Avoided Period
+    results.totalRentAvoidedPeriod = inputs.monthlyRentAvoided * 12 * inputs.yearsToSell;
     // Total Cash Out Calculation: Add External Rent
     results.totalCashOut = results.totalInitialOutlay + results.totalInterestPaid + results.totalRunningCostPeriod - results.totalRentalIncomePeriod + results.totalExternalRentPeriod;
     results.netSaleProceeds = results.estimatedSaleValue - results.loanBalanceAtSale;
@@ -89,6 +91,7 @@ const calculateSimulation = (inputs: SimulationInput): SimulationResult => {
         results.estimatedSaleValue = inputs.purchasePrice;
         results.totalRunningCostPeriod = 0;
         results.totalExternalRentPeriod = 0; // Reset
+        results.totalRentAvoidedPeriod = 0; // Reset
         results.totalPrincipalPaid = 0;
         // Update 0-year cash out logic
         results.totalCashOut = results.totalInitialOutlay + results.totalInterestPaid + results.totalRunningCostPeriod + results.totalPrincipalPaid + results.totalExternalRentPeriod;
@@ -252,22 +255,11 @@ export const getRenderData = (inputs: SimulationInput, t: TFunction): { renderDa
                     step: '10'
                 },
                 {
-                    metric: t('table.desired_monthly_cost'),
-                    value: inputs.desiredMonthlyCost,
-                    format: 'currency',
-                    calc: t('table.desired_monthly_cost_calc'),
-                    isInput: true,
-                    stateKey: 'desiredMonthlyCost',
-                    inputHighlight: true
-                },
-                {
                     metric: t('table.net_monthly_expense'),
                     value: Math.abs(results.monthlyCashFlow),
                     format: 'currency',
                     calc: results.monthlyCashFlow > 0 ? t('table.net_monthly_expense_calc_in') : t('table.net_monthly_expense_calc_out'),
-                    color: results.monthlyCashFlow > 0
-                        ? 'green' : Math.abs(results.monthlyCashFlow) > inputs.desiredMonthlyCost
-                            ? 'red' : 'highlight',
+                    color: results.monthlyCashFlow > 0 ? 'green' : 'highlight',
                     evaluatedDisplay: format(Math.abs(results.monthlyCashFlow) * 12 * inputs.yearsToSell, 'currency'),
                     evaluatedDescription: t('table.after_years', {val: inputs.yearsToSell}),
                     isCost: true
@@ -332,6 +324,18 @@ export const getRenderData = (inputs: SimulationInput, t: TFunction): { renderDa
                     calc: t('table.total_cash_lost_calc'),
                     color: 'red',
                     isCost: true
+                },
+                {
+                    metric: t('table.monthly_rent_avoided'),
+                    value: inputs.monthlyRentAvoided,
+                    format: 'currency',
+                    calc: t('table.monthly_rent_avoided_calc'),
+                    isInput: true,
+                    stateKey: 'monthlyRentAvoided',
+                    step: '10',
+                    evaluatedDisplay: format(results.totalRentAvoidedPeriod, 'currency'),
+                    evaluatedDescription: t('table.after_years', {val: inputs.yearsToSell}),
+                    color: 'highlight'
                 },
                 {
                     metric: t('table.net_sale_proceeds'),
