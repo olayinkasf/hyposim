@@ -4,6 +4,7 @@ import {sanitizeHTMLMinimal} from '../utils/sanitize';
 import type {RenderLine, SimulationInput} from '../types';
 import {format} from '../formatters';
 import {EditableValue} from './EditableValue';
+import { colors, spacing, transitions } from '../theme/colors';
 
 interface TableRowProps {
     line: RenderLine;
@@ -11,6 +12,7 @@ interface TableRowProps {
     inputs: SimulationInput;
     handleInputChange: (name: keyof SimulationInput, value: string, isPercent: boolean | undefined) => void;
     color?: 'highlight' | 'red' | 'green' | 'yellow';
+    isEvenRow?: boolean;
 }
 
 export const TableRow: React.FC<TableRowProps> = ({
@@ -18,7 +20,8 @@ export const TableRow: React.FC<TableRowProps> = ({
                                                       lineNumber,
                                                       inputs,
                                                       handleInputChange,
-                                                      color
+                                                      color,
+                                                      isEvenRow = false
                                                   }) => {
     let valueText = '';
 
@@ -33,44 +36,59 @@ export const TableRow: React.FC<TableRowProps> = ({
     const calcContent = line.calc;
 
     const getRowStyling = () => {
-        let style = {};
+        let baseStyle = {
+            transition: `all ${transitions.fast}`,
+            '&:hover': {
+                bgcolor: colors.primary[50],
+            }
+        };
+
         switch (color) {
             case 'highlight':
-                style = {bgcolor: '#eff6ff'};
-                break;
+                return { ...baseStyle, bgcolor: colors.primary[100], '&:hover': { bgcolor: colors.primary[200] } };
             case 'red':
-                style = {bgcolor: '#fee2e2'};
-                break;
+                return { ...baseStyle, bgcolor: colors.error[50], '&:hover': { bgcolor: colors.error[100] } };
             case 'green':
-                style = {bgcolor: '#dcfce7'};
-                break;
+                return { ...baseStyle, bgcolor: colors.success[50], '&:hover': { bgcolor: colors.success[100] } };
             case 'yellow':
-                style = {bgcolor: '#fef9c3'};
-                break;
+                return { ...baseStyle, bgcolor: colors.warning[50], '&:hover': { bgcolor: colors.warning[100] } };
             default:
-                break;
+                return {
+                    ...baseStyle,
+                    bgcolor: isEvenRow ? colors.background.base : colors.neutral[50]
+                };
         }
-        return style;
     }
 
     const getValueStyling = () => {
         switch (color) {
             case 'red':
-                return {color: '#b91c1c', fontWeight: 800};
+                return {color: colors.error[700], fontWeight: 700};
             case 'green':
-                return {color: '#15803d', fontWeight: 800};
+                return {color: colors.success[700], fontWeight: 700};
+            case 'highlight':
+                return {color: colors.text.primary, fontWeight: 600};
             default:
-                return {};
+                return {color: colors.text.primary, fontWeight: 500};
         }
     }
 
     return (
         <MuiTableRow sx={getRowStyling()}>
-            <TableCell sx={{whiteSpace: 'nowrap', color: '#6b7280'}}>{lineNumber}.</TableCell>
-            <TableCell>
+            <TableCell sx={{
+                whiteSpace: 'nowrap',
+                color: colors.text.muted,
+                py: spacing.sm,
+                px: spacing.md,
+                fontSize: '0.75rem'
+            }}>
+                {lineNumber}.
+            </TableCell>
+            <TableCell sx={{ py: spacing.sm, px: spacing.md }}>
                 <Typography variant="body2" sx={{
-                    fontWeight: color === 'highlight' ? 700 : 500,
-                    color: color === 'highlight' ? '#111827' : 'inherit'
+                    fontWeight: color === 'highlight' ? 600 : 400,
+                    color: color === 'highlight' ? colors.text.primary : colors.text.secondary,
+                    fontSize: '0.875rem'
                 }}>
                     {line.metric}
                     {calcContent && (
@@ -79,7 +97,11 @@ export const TableRow: React.FC<TableRowProps> = ({
                             <Typography
                                 component="span"
                                 variant="caption"
-                                sx={{color: '#6b7280'}}
+                                sx={{
+                                    color: colors.text.muted,
+                                    fontSize: '0.75rem',
+                                    lineHeight: 1.5
+                                }}
                                 dangerouslySetInnerHTML={{
                                     __html: sanitizeHTMLMinimal(calcContent)
                                 }}
@@ -88,18 +110,23 @@ export const TableRow: React.FC<TableRowProps> = ({
                     )}
                 </Typography>
             </TableCell>
-            <TableCell align="right" sx={getValueStyling()}>
+            <TableCell align="right" sx={{
+                ...getValueStyling(),
+                py: spacing.sm,
+                px: spacing.md,
+                fontSize: '0.875rem'
+            }}>
                 <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'flex-end'}}>
                     {line.isInput && line.stateKey ?
                         <EditableValue line={{...line, stateKey: line.stateKey}} inputs={inputs}
                                        handleInputChange={handleInputChange}/> : valueText}
                     {(line.evaluatedDescription || line.evaluatedDisplay) && (
-                        <Box sx={{display: 'flex', alignItems: 'baseline', marginTop: '4px'}}>
+                        <Box sx={{display: 'flex', alignItems: 'baseline', mt: 0.5}}>
                             <Typography variant="caption"
                                         sx={{
-                                            fontSize: '0.75rem',
-                                            color: '#7e7e7e',
-                                            marginRight: '4px'
+                                            fontSize: '0.7rem',
+                                            color: colors.text.muted,
+                                            mr: 0.5
                                         }}>
                                 {(line.evaluatedDescription || "") + " = " + line.evaluatedDisplay}
                             </Typography>

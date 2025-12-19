@@ -16,6 +16,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import type { SimulationResult, SimulationInput, AmortizationData } from '../types';
 import { format } from '../formatters';
+import { colors, spacing, borderRadius, elevation, transitions } from '../theme/colors';
 
 interface AmortizationScheduleProps {
     results: SimulationResult;
@@ -36,21 +37,29 @@ export const AmortizationSchedule: React.FC<AmortizationScheduleProps> = ({ resu
         : results.amortizationSchedule;
 
     return (
-        <Box id="amortization-schedule" sx={{ mt: 5, p: 3, bgcolor: '#f9fafb', borderRadius: 2 }}>
+        <Box id="amortization-schedule" sx={{
+            mt: spacing.xl,
+            p: spacing.lg,
+            bgcolor: colors.neutral[50],
+            borderRadius: borderRadius.lg,
+            border: `1px solid ${colors.neutral[200]}`
+        }}>
             <Button
                 onClick={() => setIsScheduleVisible(!isScheduleVisible)}
                 fullWidth
                 sx={{
                     justifyContent: 'space-between',
                     textAlign: 'left',
-                    p: 2,
-                    bgcolor: '#e5e7eb',
-                    color: '#374151',
-                    borderRadius: 2,
+                    p: spacing.md,
+                    bgcolor: colors.neutral[100],
+                    color: colors.text.primary,
+                    borderRadius: borderRadius.md,
                     textTransform: 'none',
+                    boxShadow: elevation[0],
+                    transition: `all ${transitions.normal}`,
                     '&:hover': {
-                        bgcolor: '#d1d5db',
-                        boxShadow: 1
+                        bgcolor: colors.neutral[200],
+                        boxShadow: elevation[1]
                     }
                 }}
             >
@@ -93,27 +102,100 @@ export const AmortizationSchedule: React.FC<AmortizationScheduleProps> = ({ resu
                         </Button>
                     </Box>
                 )}
-                <TableContainer component={Paper} sx={{ mt: 2, maxHeight: 400 }}>
+                <TableContainer
+                    component={Paper}
+                    sx={{
+                        mt: spacing.md,
+                        maxHeight: 400,
+                        boxShadow: elevation[1],
+                        borderRadius: borderRadius.md,
+                        overflow: 'auto'
+                    }}
+                >
                     <Table stickyHeader aria-label="amortization schedule">
                         <TableHead>
                             <TableRow>
-                                <TableCell sx={{ width: '8.333333%', fontWeight: 600, color: '#4b5563', textTransform: 'uppercase' }}>
+                                <TableCell sx={{
+                                    width: '15%',
+                                    fontWeight: 600,
+                                    color: colors.text.primary,
+                                    textTransform: 'uppercase',
+                                    fontSize: '0.75rem',
+                                    bgcolor: colors.neutral[100],
+                                    py: spacing.sm,
+                                    backdropFilter: 'blur(8px)'
+                                }}>
                                     {viewMode === 'yearly' && shouldUseYearlyView ? t('amortization.year') : t('amortization.month')}
                                 </TableCell>
-                                <TableCell align="right" sx={{ width: '25%', fontWeight: 600, color: '#4b5563', textTransform: 'uppercase' }}>{t('amortization.interest_paid')}</TableCell>
-                                <TableCell align="right" sx={{ width: '25%', fontWeight: 600, color: '#4b5563', textTransform: 'uppercase' }}>{t('amortization.principal_paid')}</TableCell>
-                                <TableCell align="right" sx={{ width: '41.666667%', fontWeight: 600, color: '#4b5563', textTransform: 'uppercase' }}>{t('amortization.remaining_balance')}</TableCell>
+                                <TableCell align="right" sx={{
+                                    width: '28%',
+                                    fontWeight: 600,
+                                    color: colors.text.primary,
+                                    textTransform: 'uppercase',
+                                    fontSize: '0.75rem',
+                                    bgcolor: colors.neutral[100],
+                                    py: spacing.sm,
+                                    backdropFilter: 'blur(8px)'
+                                }}>{t('amortization.interest_paid')}</TableCell>
+                                <TableCell align="right" sx={{
+                                    width: '28%',
+                                    fontWeight: 600,
+                                    color: colors.text.primary,
+                                    textTransform: 'uppercase',
+                                    fontSize: '0.75rem',
+                                    bgcolor: colors.neutral[100],
+                                    py: spacing.sm,
+                                    backdropFilter: 'blur(8px)'
+                                }}>{t('amortization.principal_paid')}</TableCell>
+                                <TableCell align="right" sx={{
+                                    width: '29%',
+                                    fontWeight: 600,
+                                    color: colors.text.primary,
+                                    textTransform: 'uppercase',
+                                    fontSize: '0.75rem',
+                                    bgcolor: colors.neutral[100],
+                                    py: spacing.sm,
+                                    backdropFilter: 'blur(8px)'
+                                }}>{t('amortization.remaining_balance')}</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {displayData.map((item: AmortizationData) => (
-                                <TableRow key={item.month} hover>
-                                    <TableCell component="th" scope="row" sx={{ color: '#4b5563' }}>
+                            {displayData.map((item: AmortizationData, index: number) => (
+                                <TableRow
+                                    key={item.month}
+                                    sx={{
+                                        bgcolor: index % 2 === 0 ? colors.background.base : colors.neutral[50],
+                                        transition: `background-color ${transitions.fast}`,
+                                        '&:hover': {
+                                            bgcolor: colors.primary[50],
+                                        }
+                                    }}
+                                >
+                                    <TableCell component="th" scope="row" sx={{
+                                        color: colors.text.secondary,
+                                        py: spacing.sm,
+                                        fontSize: '0.875rem'
+                                    }}>
                                         {viewMode === 'yearly' && shouldUseYearlyView ? `${t('amortization.year')} ${Math.floor(item.month / 12)}` : item.month}
                                     </TableCell>
-                                    <TableCell align="right" sx={{ color: '#b91c1c' }}>{format(item.interest, 'currency')}</TableCell>
-                                    <TableCell align="right" sx={{ color: '#15803d' }}>{format(item.principal, 'currency')}</TableCell>
-                                    <TableCell align="right" sx={{ fontWeight: 500, color: '#1f2937' }}>{format(item.remainingBalance, 'currency')}</TableCell>
+                                    <TableCell align="right" sx={{
+                                        color: colors.error[700],
+                                        fontWeight: 500,
+                                        py: spacing.sm,
+                                        fontSize: '0.875rem'
+                                    }}>{format(item.interest, 'currency')}</TableCell>
+                                    <TableCell align="right" sx={{
+                                        color: colors.success[700],
+                                        fontWeight: 500,
+                                        py: spacing.sm,
+                                        fontSize: '0.875rem'
+                                    }}>{format(item.principal, 'currency')}</TableCell>
+                                    <TableCell align="right" sx={{
+                                        fontWeight: 600,
+                                        color: colors.text.primary,
+                                        py: spacing.sm,
+                                        fontSize: '0.875rem'
+                                    }}>{format(item.remainingBalance, 'currency')}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

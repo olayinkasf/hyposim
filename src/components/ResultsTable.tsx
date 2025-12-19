@@ -4,10 +4,12 @@ import {
     TableBody,
     TableCell,
     TableContainer,
-    TableRow as MuiTableRow
+    TableRow as MuiTableRow,
+    Paper
 } from '@mui/material';
 import type {RenderData, SimulationInput} from '../types';
 import {TableRow} from './TableRow';
+import { colors, spacing, borderRadius, elevation, typography } from '../theme/colors';
 
 interface ResultsTableProps {
     renderData: RenderData[];
@@ -26,17 +28,33 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({ renderData, inputs, 
     };
 
     return (
-        <TableContainer id="simulation-results" sx={{ height: '100%', overflow: 'auto' }}>
-            <Table sx={{ minWidth: 650 }} size="small" aria-label="simulation results table">
+        <TableContainer
+            component={Paper}
+            id="simulation-results"
+            sx={{
+                height: '100%',
+                overflow: 'auto',
+                boxShadow: elevation[2],
+                borderRadius: borderRadius.lg
+            }}
+        >
+            <Table sx={{ minWidth: 650 }} aria-label="simulation results table">
                 <TableBody>
                     {renderData.map((section, sectionIndex) => (
                         <React.Fragment key={sectionIndex}>
                             <MuiTableRow>
                                 <TableCell colSpan={3} sx={{
-                                    bgcolor: '#f3f4f6',
+                                    bgcolor: colors.neutral[100],
                                     textAlign: 'left',
-                                    fontWeight: 700,
-                                    color: '#374151'
+                                    ...typography.cardTitle,
+                                    py: spacing.md,
+                                    px: spacing.md,
+                                    color: colors.text.primary,
+                                    borderBottom: `2px solid ${colors.neutral[300]}`,
+                                    position: 'sticky',
+                                    top: 0,
+                                    zIndex: 10,
+                                    backdropFilter: 'blur(8px)'
                                 }}>
                                     {section.section}
                                 </TableCell>
@@ -49,6 +67,7 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({ renderData, inputs, 
                                     inputs={inputs}
                                     handleInputChange={handleInputChange}
                                     color={line.color}
+                                    isEvenRow={(getLineNumber(sectionIndex, lineIndex) - 1) % 2 === 0}
                                 />
                             ))}
                         </React.Fragment>
