@@ -21,7 +21,7 @@ export const Header: React.FC = () => {
         }}>
             <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
                 <Box sx={{display: 'flex', alignItems: 'center', cursor: 'pointer'}}>
-                    <img src="/logo.jpg" alt="Hyposim Logo" style={{height: '40px', marginRight: '16px'}}/>
+                    <img src={`${import.meta.env.BASE_URL}logo.jpg`} alt="Hyposim Logo" style={{height: '40px', marginRight: '16px'}}/>
                     <div>
                         <Typography variant="h5" component="h1" sx={{fontWeight: 800, color: '#1f2937'}}>
                             {t('header.title')}

@@ -79,7 +79,7 @@ export const Summary: React.FC<SummaryProps> = ({ results, inputs }) => {
                                 fontSize: '1.5rem',
                                 color: colors.text.primary
                             }}>
-                                {format(inputs.monthlyHausgeldFull, 'currency')}
+                                {format(inputs.monthlyHausgeldFull + inputs.monthlyMaintenanceReserve, 'currency')}
                             </Typography>
                         </CardContent>
                     </Card>

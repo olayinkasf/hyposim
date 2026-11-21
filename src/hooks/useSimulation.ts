@@ -24,6 +24,13 @@ const initialInputs: SimulationInput = {
     monthlyRentAvoided: 0.00,
     yearsToSell: 10,
     annualAppreciationRate: 0.020,
+
+    fixedRateYears: 10,
+    rateAfterFixed: 0.0500,
+    monthlyMaintenanceReserve: 66.00,
+    specialLevies: 0.00,
+    sellingCostRate: 0.0357,
+    investmentReturnRate: 0.0500,
 };
 
 export const useSimulation = () => {
@@ -57,6 +64,8 @@ export const useSimulation = () => {
             case 'monthlyRentalIncome':
             case 'monthlyExternalRent':
             case 'monthlyRentAvoided':
+            case 'monthlyMaintenanceReserve':
+            case 'specialLevies':
                 return clamp(value, 0, 100000000);
 
             // Tax and rate percentages: 0% to 100% (stored as decimals)
@@ -68,7 +77,15 @@ export const useSimulation = () => {
             // Interest and appreciation rates: 0% to 50% (stored as decimals)
             case 'interestRate':
             case 'amortizationRate':
+            case 'rateAfterFixed':
+            case 'investmentReturnRate':
                 return clamp(value, 0, 0.5);
+
+            case 'sellingCostRate':
+                return clamp(value, 0, 1.0);
+
+            case 'fixedRateYears':
+                return clamp(value, 0, 40);
 
             // Annual appreciation: -10% to 50% (stored as decimals)
             case 'annualAppreciationRate':

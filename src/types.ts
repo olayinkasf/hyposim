@@ -14,6 +14,12 @@ export interface SimulationInput {
     monthlyRentAvoided: number;
     yearsToSell: number;
     annualAppreciationRate: number;
+    fixedRateYears: number;
+    rateAfterFixed: number;
+    monthlyMaintenanceReserve: number;
+    specialLevies: number;
+    sellingCostRate: number;
+    investmentReturnRate: number;
 }
 
 export interface SimulationResult {
@@ -51,6 +57,16 @@ export interface SimulationResult {
     netSaleProceeds: number;
     netProceeds: number;
     amortizationSchedule: AmortizationData[];
+    annualMaintenanceReserve: number;
+    balanceAtFixedEnd: number;
+    monthlyPaymentAfterFixed: number;
+    totalDebtServicePeriod: number;
+    totalCashLost: number;
+    sellingCosts: number;
+    netProceedsWithRent: number;
+    downPaymentInvestedValue: number;
+    investingGainForgone: number;
+    buyVsInvest: number;
 }
 
 export interface AmortizationData {
