@@ -4,7 +4,7 @@ import { getRenderData } from '../data.tsx';
 import { useTranslation } from 'react-i18next';
 import { clamp } from '../utils/validation';
 
-const initialInputs: SimulationInput = {
+export const defaultInputs: SimulationInput = {
     purchasePrice: 369000.00,
     renovationBudget: 31000.00,
     cashDownPayment: 100000.00,
@@ -31,11 +31,43 @@ const initialInputs: SimulationInput = {
     specialLevies: 0.00,
     sellingCostRate: 0.0357,
     investmentReturnRate: 0.0500,
+    rentGrowthRate: 0.0300,
+    costGrowthRate: 0.0200,
+    investmentTaxRate: 0.26375,
+    capitalGainsTaxRate: 0.0,
+    monthlyPropertyTax: 30.00,
+    vacancyRate: 0.0400,
+    renovationValueShare: 0.50,
+    annualExtraRepayment: 0.00,
+};
+
+// Fill in any fields missing from older saved flats or links.
+export const withDefaults = (partial: Partial<SimulationInput>): SimulationInput => {
+    const merged = { ...defaultInputs };
+    for (const key of Object.keys(defaultInputs) as (keyof SimulationInput)[]) {
+        const v = partial[key];
+        if (typeof v === 'number' && Number.isFinite(v)) merged[key] = v;
+    }
+    return merged;
+};
+
+export const encodeInputs = (inputs: SimulationInput): string =>
+    btoa(unescape(encodeURIComponent(JSON.stringify(inputs))));
+
+const inputsFromUrl = (): SimulationInput => {
+    try {
+        const s = new URLSearchParams(window.location.search).get('s');
+        if (!s) return defaultInputs;
+        return withDefaults(JSON.parse(decodeURIComponent(escape(atob(s)))));
+    } catch {
+        return defaultInputs;
+    }
 };
 
 export const useSimulation = () => {
     const { t } = useTranslation();
-    const [inputs, setInputs] = useState<SimulationInput>(initialInputs);
+    const [inputs, setInputs] = useState<SimulationInput>(inputsFromUrl);
+    const loadInputs = (next: Partial<SimulationInput>) => setInputs(withDefaults(next));
 
     const handleInputChange = (name: keyof SimulationInput, value: string, isPercent: boolean | undefined) => {
         let numericValue = parseFloat(value);
@@ -66,6 +98,8 @@ export const useSimulation = () => {
             case 'monthlyRentAvoided':
             case 'monthlyMaintenanceReserve':
             case 'specialLevies':
+            case 'monthlyPropertyTax':
+            case 'annualExtraRepayment':
                 return clamp(value, 0, 100000000);
 
             // Tax and rate percentages: 0% to 100% (stored as decimals)
@@ -82,6 +116,10 @@ export const useSimulation = () => {
                 return clamp(value, 0, 0.5);
 
             case 'sellingCostRate':
+            case 'investmentTaxRate':
+            case 'capitalGainsTaxRate':
+            case 'vacancyRate':
+            case 'renovationValueShare':
                 return clamp(value, 0, 1.0);
 
             case 'fixedRateYears':
@@ -89,6 +127,8 @@ export const useSimulation = () => {
 
             // Annual appreciation: -10% to 50% (stored as decimals)
             case 'annualAppreciationRate':
+            case 'rentGrowthRate':
+            case 'costGrowthRate':
                 return clamp(value, -0.1, 0.5);
 
             // Years: 0 to 100 years
@@ -106,5 +146,5 @@ export const useSimulation = () => {
 
     const { results, renderData } = useMemo(() => getRenderData(inputs, t), [inputs, t]);
 
-    return { inputs, results, renderData, handleInputChange };
+    return { inputs, results, renderData, handleInputChange, loadInputs };
 };

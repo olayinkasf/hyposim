@@ -31,6 +31,7 @@ export const TableRow: React.FC<TableRowProps> = ({
         else if (line.format === 'm²') valueText = format(line.value, 'm²');
         else if (line.metric === 'Fully Repaid After Y Years') valueText = `${format(line.value, 'number')} Years`;
         else valueText = format(line.value, 'number');
+        if (line.displayText) valueText = line.displayText;
     }
 
     const calcContent = line.calc;

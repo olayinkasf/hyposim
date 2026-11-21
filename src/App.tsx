@@ -8,9 +8,10 @@ import {RightSection} from './components/RightSection';
 import {Box} from '@mui/material';
 import {DisclaimerModal} from './components/DisclaimerModal';
 import Cookies from 'js-cookie';
+import {ScenarioPanel} from './components/ScenarioPanel';
 
 const App = () => {
-    const {inputs, results, renderData, handleInputChange} = useSimulation();
+    const {inputs, results, renderData, handleInputChange, loadInputs} = useSimulation();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
@@ -50,6 +51,7 @@ const App = () => {
                         maxHeight: {md: 'calc(100vh - 4rem)'},
                         overflow: {md: 'auto'}
                     }}> {/* Right Column for other components */}
+                        <ScenarioPanel inputs={inputs} onLoad={loadInputs}/>
                         <RightSection/>
                         <Summary results={results} inputs={inputs}/>
                         <PaymentBreakdown results={results}/>

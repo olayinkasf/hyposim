@@ -31,8 +31,9 @@ const StyledInput = styled('input')({
 
 export const EditableValue: React.FC<EditableValueProps> = ({ line, inputs, handleInputChange }) => {
     const value = line.isPercent ? (inputs[line.stateKey!] * 100) : inputs[line.stateKey!];
-    const unit = line.isPercent ? '%' : (line.format === 'currency' ? '€' : (line.stateKey === 'yearsToSell' ? 'Years' : line.format));
-    const displayValue = (value as number).toFixed(unit === 'm²' || line.stateKey === 'yearsToSell' ? 0 : 2);
+    const isYears = line.stateKey === 'yearsToSell' || line.stateKey === 'fixedRateYears';
+    const unit = line.isPercent ? '%' : (line.format === 'currency' ? '€' : (isYears ? 'Years' : line.format));
+    const displayValue = (value as number).toFixed(unit === 'm²' || isYears ? 0 : 2);
     const step = line.isPercent ? '0.01' : (line.format === 'currency' ? '100' : '1');
 
     return (

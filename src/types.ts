@@ -20,6 +20,14 @@ export interface SimulationInput {
     specialLevies: number;
     sellingCostRate: number;
     investmentReturnRate: number;
+    rentGrowthRate: number;
+    costGrowthRate: number;
+    investmentTaxRate: number;
+    capitalGainsTaxRate: number;
+    monthlyPropertyTax: number;
+    vacancyRate: number;
+    renovationValueShare: number;
+    annualExtraRepayment: number;
 }
 
 export interface SimulationResult {
@@ -64,9 +72,15 @@ export interface SimulationResult {
     totalCashLost: number;
     sellingCosts: number;
     netProceedsWithRent: number;
-    downPaymentInvestedValue: number;
-    investingGainForgone: number;
     buyVsInvest: number;
+    loanToValue: number;
+    monthlyRunningCost: number;
+    totalExtraRepaid: number;
+    capitalGainsTax: number;
+    renterPortfolioBeforeTax: number;
+    renterInvestmentTax: number;
+    renterWealth: number;
+    ownerWealth: number;
 }
 
 export interface AmortizationData {
@@ -96,5 +110,6 @@ export interface RenderLine {
     flow?: boolean;
     evaluatedDescription?: string;
     evaluatedDisplay?: string;
+    displayText?: string;
     color?: 'highlight' | 'red' | 'green' | 'yellow';
 }

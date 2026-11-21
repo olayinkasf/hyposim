@@ -2,7 +2,7 @@ import type { TFunction } from 'i18next';
 import type {SimulationInput, SimulationResult, RenderData, AmortizationData} from './types';
 import {format} from './formatters';
 
-const calculateSimulation = (inputs: SimulationInput): SimulationResult => {
+export const calculateSimulation = (inputs: SimulationInput): SimulationResult => {
     const results = {} as SimulationResult;
     // 1. Transaction Costs
     results.transferTax = inputs.purchasePrice * inputs.taxTransfer;
@@ -16,83 +16,123 @@ const calculateSimulation = (inputs: SimulationInput): SimulationResult => {
     results.totalInitialOutlay = inputs.cashDownPayment;
     results.netEquityAppliedToAsset = inputs.cashDownPayment - results.totalTransactionCosts;
     results.loanRequired = Math.max(0, results.totalProjectCost - inputs.cashDownPayment);
+    results.loanToValue = results.loanRequired / (inputs.purchasePrice || 1);
     // Debt service during the fixed-rate period
     results.annualDebtServiceRate = inputs.interestRate + inputs.amortizationRate;
     results.annualDebtService = results.loanRequired * results.annualDebtServiceRate;
     results.monthlyMortgagePayment = results.annualDebtService / 12;
     results.firstMonthInterest = results.loanRequired * inputs.interestRate / 12;
     results.firstMonthPrincipal = results.monthlyMortgagePayment - results.firstMonthInterest;
-    // 4. Running costs (Hausgeld + own upkeep reserve)
+    // 4. Running costs in year 1 (Hausgeld + own upkeep + Grundsteuer)
     results.annualHausgeldFull = inputs.monthlyHausgeldFull * 12;
     results.annualMaintenanceReserve = inputs.monthlyMaintenanceReserve * 12;
-    results.annualRentalIncome = inputs.monthlyRentalIncome * 12;
+    results.annualRentalIncome = inputs.monthlyRentalIncome * (1 - inputs.vacancyRate) * 12;
     results.annualExternalRent = inputs.monthlyExternalRent * 12;
-    results.totalAnnualRunningCost = results.annualHausgeldFull + results.annualMaintenanceReserve;
+    results.monthlyRunningCost = inputs.monthlyHausgeldFull + inputs.monthlyMaintenanceReserve + inputs.monthlyPropertyTax;
+    results.totalAnnualRunningCost = results.monthlyRunningCost * 12;
     results.totalAnnualCost = results.annualDebtService + results.totalAnnualRunningCost - results.annualRentalIncome + results.annualExternalRent;
     results.annualCashFlow = -results.totalAnnualCost;
     results.monthlyCashFlow = results.annualCashFlow / 12;
 
-    // 5. Amortization with a rate change after the fixed period (Anschlussfinanzierung).
-    // After the fixed period the bank sets a new payment: remaining balance x (new rate + same repayment rate).
+    // 5. Month-by-month: loan (with rate change + extra repayments), growing costs/rents,
+    //    and a renter who invests the down payment plus any monthly difference.
     const monthsToSell = Math.round(inputs.yearsToSell * 12);
     const fixedMonths = Math.round(inputs.fixedRateYears * 12);
+    const monthlyReturn = Math.pow(1 + inputs.investmentReturnRate, 1 / 12) - 1;
+    const leviesMonth = Math.max(1, Math.round(monthsToSell / 2));
     let balance = results.loanRequired;
-    let payment = results.monthlyMortgagePayment;
-    let totalInterestPaid = 0;
-    let totalPrincipalPaid = 0;
-    let monthsToRepay = 0;
+    let payment = fixedMonths === 0 ? balance * (inputs.rateAfterFixed + inputs.amortizationRate) / 12 : results.monthlyMortgagePayment;
+    results.monthlyPaymentAfterFixed = fixedMonths === 0 ? payment : 0;
     results.balanceAtFixedEnd = fixedMonths === 0 ? balance : 0;
-    results.monthlyPaymentAfterFixed = fixedMonths === 0 ? balance * (inputs.rateAfterFixed + inputs.amortizationRate) / 12 : 0;
-    if (fixedMonths === 0) payment = results.monthlyPaymentAfterFixed;
     results.loanBalanceAtSale = balance;
+    let totalInterestPaid = 0, totalPrincipalPaid = 0, totalExtraRepaid = 0, monthsToRepay = 0;
+    let runningPeriod = 0, rentalPeriod = 0, externalRentPeriod = 0, rentAvoidedPeriod = 0;
+    let renterPortfolio = inputs.cashDownPayment;
+    let renterContributions = inputs.cashDownPayment;
     const schedule: AmortizationData[] = [];
-    for (let month = 1; balance > 0.005 && month <= Math.max(monthsToSell, 12 * 100); month++) {
-        if (month === fixedMonths + 1) {
+    const lastMonth = Math.max(monthsToSell, 12 * 100);
+    for (let month = 1; month <= lastMonth; month++) {
+        const inPeriod = month <= monthsToSell;
+        if (balance <= 0.005 && !inPeriod) break;
+        if (month === fixedMonths + 1 && balance > 0.005) {
             results.balanceAtFixedEnd = balance;
             payment = balance * (inputs.rateAfterFixed + inputs.amortizationRate) / 12;
             results.monthlyPaymentAfterFixed = payment;
         }
-        const rate = month <= fixedMonths ? inputs.interestRate : inputs.rateAfterFixed;
-        const interest = balance * rate / 12;
-        let principal = payment - interest;
-        if (principal <= 0 && month > 600) break; // payment never covers interest
-        if (principal > balance) principal = balance;
-        balance -= principal;
-        if (month <= monthsToSell) {
-            totalInterestPaid += interest;
-            totalPrincipalPaid += principal;
-            schedule.push({month, interest, principal, remainingBalance: balance});
-            results.loanBalanceAtSale = balance;
+        let loanCashThisMonth = 0;
+        if (balance > 0.005) {
+            const rate = month <= fixedMonths ? inputs.interestRate : inputs.rateAfterFixed;
+            const interest = balance * rate / 12;
+            let principal = Math.min(payment - interest, balance);
+            if (principal <= 0 && month > 600) break; // payment never covers interest
+            balance -= principal;
+            let extra = 0;
+            if (month % 12 === 0 && inputs.annualExtraRepayment > 0 && balance > 0) {
+                extra = Math.min(inputs.annualExtraRepayment, balance);
+                balance -= extra;
+            }
+            principal += extra;
+            loanCashThisMonth = interest + principal;
+            if (inPeriod) {
+                totalInterestPaid += interest;
+                totalPrincipalPaid += principal;
+                totalExtraRepaid += extra;
+                schedule.push({month, interest, principal, remainingBalance: balance});
+                results.loanBalanceAtSale = balance;
+            }
+            if (balance <= 0.005) { balance = 0; monthsToRepay = month; }
         }
-        if (balance <= 0.005) monthsToRepay = month;
+        if (inPeriod) {
+            const year = Math.floor((month - 1) / 12);
+            const costFactor = Math.pow(1 + inputs.costGrowthRate, year);
+            const rentFactor = Math.pow(1 + inputs.rentGrowthRate, year);
+            const running = results.monthlyRunningCost * costFactor + (month === leviesMonth ? inputs.specialLevies : 0);
+            const rental = inputs.monthlyRentalIncome * (1 - inputs.vacancyRate) * rentFactor;
+            const external = inputs.monthlyExternalRent * rentFactor;
+            const rentAvoided = inputs.monthlyRentAvoided * rentFactor;
+            runningPeriod += running;
+            rentalPeriod += rental;
+            externalRentPeriod += external;
+            rentAvoidedPeriod += rentAvoided;
+            // Same money leaves your pocket in both cases. The renter pays rent and invests the rest.
+            const ownerOutflow = loanCashThisMonth + running + external - rental;
+            const difference = ownerOutflow - rentAvoided;
+            renterPortfolio = renterPortfolio * (1 + monthlyReturn) + difference;
+            renterContributions += difference;
+        }
     }
     results.totalInterestPaid = totalInterestPaid;
     results.totalPrincipalPaid = totalPrincipalPaid;
+    results.totalExtraRepaid = totalExtraRepaid;
     results.amortizationSchedule = schedule;
     results.repaymentYears = results.loanRequired === 0 ? 0 : monthsToRepay > 0 ? monthsToRepay / 12 : 'N/A';
 
     // 6. Holding period totals
-    const years = inputs.yearsToSell;
     results.totalDebtServicePeriod = totalInterestPaid + totalPrincipalPaid;
-    results.totalRunningCostPeriod = results.totalAnnualRunningCost * years + inputs.specialLevies;
-    results.totalRentalIncomePeriod = results.annualRentalIncome * years;
-    results.totalExternalRentPeriod = results.annualExternalRent * years;
-    results.totalRentAvoidedPeriod = inputs.monthlyRentAvoided * 12 * years;
-    results.totalCashOut = inputs.cashDownPayment + results.totalDebtServicePeriod + results.totalRunningCostPeriod
-        - results.totalRentalIncomePeriod + results.totalExternalRentPeriod;
+    results.totalRunningCostPeriod = runningPeriod;
+    results.totalRentalIncomePeriod = rentalPeriod;
+    results.totalExternalRentPeriod = externalRentPeriod;
+    results.totalRentAvoidedPeriod = rentAvoidedPeriod;
+    results.totalCashOut = inputs.cashDownPayment + results.totalDebtServicePeriod + runningPeriod - rentalPeriod + externalRentPeriod;
     results.totalCashLost = results.totalCashOut - totalPrincipalPaid;
 
-    // 7. Sale
-    results.estimatedSaleValue = inputs.purchasePrice * Math.pow(1 + inputs.annualAppreciationRate, years);
+    // 7. Sale (renovation adds part of its cost to the value)
+    const valueBase = inputs.purchasePrice + inputs.renovationBudget * inputs.renovationValueShare;
+    results.estimatedSaleValue = valueBase * Math.pow(1 + inputs.annualAppreciationRate, inputs.yearsToSell);
     results.sellingCosts = results.estimatedSaleValue * inputs.sellingCostRate;
-    results.netSaleProceeds = results.estimatedSaleValue - results.sellingCosts - results.loanBalanceAtSale;
+    // Capital gains tax only applies when selling within 10 years (and not self-used: user sets rate to 0 then)
+    const taxableGain = results.estimatedSaleValue - results.sellingCosts - results.totalProjectCost;
+    results.capitalGainsTax = inputs.yearsToSell < 10 ? Math.max(0, taxableGain) * inputs.capitalGainsTaxRate : 0;
+    results.netSaleProceeds = results.estimatedSaleValue - results.sellingCosts - results.loanBalanceAtSale - results.capitalGainsTax;
     results.netProceeds = results.netSaleProceeds - results.totalCashOut;
-    results.netProceedsWithRent = results.netProceeds + results.totalRentAvoidedPeriod;
+    results.netProceedsWithRent = results.netProceeds + rentAvoidedPeriod;
 
-    // 8. Opportunity cost: the down payment invested instead
-    results.downPaymentInvestedValue = inputs.cashDownPayment * Math.pow(1 + inputs.investmentReturnRate, years);
-    results.investingGainForgone = results.downPaymentInvestedValue - inputs.cashDownPayment;
-    results.buyVsInvest = results.netProceedsWithRent - results.investingGainForgone;
+    // 8. Rent & invest instead
+    results.renterPortfolioBeforeTax = renterPortfolio;
+    results.renterInvestmentTax = Math.max(0, renterPortfolio - renterContributions) * inputs.investmentTaxRate;
+    results.renterWealth = renterPortfolio - results.renterInvestmentTax;
+    results.ownerWealth = results.netSaleProceeds;
+    results.buyVsInvest = results.ownerWealth - results.renterWealth;
     return results;
 };
 
@@ -153,6 +193,17 @@ export const getRenderData = (inputs: SimulationInput, t: TFunction): { renderDa
                     stateKey: 'renovationBudget'
                 },
                 {
+                    metric: t('table.renovation_value_share'),
+                    value: inputs.renovationValueShare,
+                    format: 'percent',
+                    calc: t('table.renovation_value_share_calc'),
+                    isInput: true,
+                    stateKey: 'renovationValueShare',
+                    isPercent: true,
+                    inputHighlight: true,
+                    evaluatedDisplay: format(inputs.renovationBudget * inputs.renovationValueShare, 'currency')
+                },
+                {
                     metric: t('table.total_cost_of_property'),
                     value: results.totalInvestmentBase,
                     calc: t('table.total_cost_of_property_calc'),
@@ -179,6 +230,13 @@ export const getRenderData = (inputs: SimulationInput, t: TFunction): { renderDa
                     stateKey: 'cashDownPayment'
                 },
                 {
+                    metric: t('table.cash_after_buying_costs'),
+                    value: results.netEquityAppliedToAsset,
+                    format: 'currency',
+                    calc: results.netEquityAppliedToAsset < 0 ? t('table.cash_after_buying_costs_warn') : t('table.cash_after_buying_costs_ok', {val: format(results.loanToValue, 'percent')}),
+                    color: results.netEquityAppliedToAsset < 0 ? 'red' : 'green'
+                },
+                {
                     metric: t('table.loan_required', {val: format(results.loanRequired / (results.totalInvestmentBase || 1), 'percent')}),
                     value: results.loanRequired,
                     format: 'currency',
@@ -201,6 +259,15 @@ export const getRenderData = (inputs: SimulationInput, t: TFunction): { renderDa
                     isInput: true,
                     stateKey: 'amortizationRate',
                     isPercent: true
+                },
+                {
+                    metric: t('table.extra_repayment'),
+                    value: inputs.annualExtraRepayment,
+                    format: 'currency',
+                    calc: t('table.extra_repayment_calc', {val: format(results.loanRequired * 0.05, 'currency')}),
+                    isInput: true,
+                    stateKey: 'annualExtraRepayment',
+                    step: '1000'
                 },
                 {
                     metric: t('table.total_annual_debt_service_rate'),
@@ -282,6 +349,26 @@ export const getRenderData = (inputs: SimulationInput, t: TFunction): { renderDa
                     step: '1000'
                 },
                 {
+                    metric: t('table.property_tax'),
+                    value: inputs.monthlyPropertyTax,
+                    format: 'currency',
+                    calc: t('table.property_tax_calc'),
+                    isInput: true,
+                    stateKey: 'monthlyPropertyTax',
+                    inputHighlight: true,
+                    step: '5'
+                },
+                {
+                    metric: t('table.cost_growth'),
+                    value: inputs.costGrowthRate,
+                    format: 'percent',
+                    calc: t('table.cost_growth_calc'),
+                    isInput: true,
+                    stateKey: 'costGrowthRate',
+                    isPercent: true,
+                    inputHighlight: true
+                },
+                {
                     metric: t('table.monthly_rental_income'),
                     value: inputs.monthlyRentalIncome,
                     format: 'currency',
@@ -290,6 +377,16 @@ export const getRenderData = (inputs: SimulationInput, t: TFunction): { renderDa
                     stateKey: 'monthlyRentalIncome',
                     inputHighlight: true,
                     color: "green"
+                },
+                {
+                    metric: t('table.vacancy_rate'),
+                    value: inputs.vacancyRate,
+                    format: 'percent',
+                    calc: t('table.vacancy_rate_calc'),
+                    isInput: true,
+                    stateKey: 'vacancyRate',
+                    isPercent: true,
+                    inputHighlight: true
                 },
                 {
                     metric: t('table.monthly_rent_payment'),
@@ -301,13 +398,23 @@ export const getRenderData = (inputs: SimulationInput, t: TFunction): { renderDa
                     step: '10'
                 },
                 {
+                    metric: t('table.rent_growth'),
+                    value: inputs.rentGrowthRate,
+                    format: 'percent',
+                    calc: t('table.rent_growth_calc'),
+                    isInput: true,
+                    stateKey: 'rentGrowthRate',
+                    isPercent: true,
+                    inputHighlight: true
+                },
+                {
                     metric: t('table.net_monthly_expense'),
                     value: Math.abs(results.monthlyCashFlow),
                     format: 'currency',
                     calc: results.monthlyCashFlow > 0 ? t('table.net_monthly_expense_calc_in') : t('table.net_monthly_expense_calc_out'),
                     color: results.monthlyCashFlow > 0 ? 'green' : 'highlight',
-                    evaluatedDisplay: format(Math.abs(results.monthlyCashFlow) * 12 * inputs.yearsToSell, 'currency'),
-                    evaluatedDescription: t('table.after_years', {val: inputs.yearsToSell}),
+                    evaluatedDisplay: format(results.totalCashOut - inputs.cashDownPayment, 'currency'),
+                    evaluatedDescription: t('table.after_years_growth', {val: inputs.yearsToSell}),
                     isCost: true
                 },
             ]
@@ -396,6 +503,18 @@ export const getRenderData = (inputs: SimulationInput, t: TFunction): { renderDa
                     color: 'red'
                 },
                 {
+                    metric: t('table.capital_gains_tax'),
+                    value: inputs.capitalGainsTaxRate,
+                    format: 'percent',
+                    calc: inputs.yearsToSell < 10 ? t('table.capital_gains_tax_calc') : t('table.capital_gains_tax_calc_free'),
+                    isInput: true,
+                    stateKey: 'capitalGainsTaxRate',
+                    isPercent: true,
+                    inputHighlight: true,
+                    evaluatedDisplay: format(results.capitalGainsTax, 'currency'),
+                    color: results.capitalGainsTax > 0 ? 'red' : undefined
+                },
+                {
                     metric: t('table.net_sale_proceeds'),
                     value: results.netSaleProceeds,
                     format: 'currency',
@@ -427,16 +546,34 @@ export const getRenderData = (inputs: SimulationInput, t: TFunction): { renderDa
                     stateKey: 'investmentReturnRate',
                     isPercent: true,
                     inputHighlight: true,
-                    evaluatedDisplay: format(results.downPaymentInvestedValue, 'currency'),
+                    evaluatedDisplay: format(results.renterPortfolioBeforeTax, 'currency'),
                     evaluatedDescription: t('table.after_years', {val: inputs.yearsToSell})
                 },
                 {
-                    metric: t('table.investing_gain_forgone'),
-                    value: results.investingGainForgone,
+                    metric: t('table.investment_tax_rate'),
+                    value: inputs.investmentTaxRate,
+                    format: 'percent',
+                    calc: t('table.investment_tax_rate_calc'),
+                    isInput: true,
+                    stateKey: 'investmentTaxRate',
+                    isPercent: true,
+                    inputHighlight: true,
+                    evaluatedDisplay: format(results.renterInvestmentTax, 'currency'),
+                    color: 'red'
+                },
+                {
+                    metric: t('table.renter_wealth', {val: inputs.yearsToSell}),
+                    value: results.renterWealth,
                     format: 'currency',
-                    calc: t('table.investing_gain_forgone_calc'),
-                    color: 'red',
-                    isCost: true
+                    calc: inputs.monthlyRentAvoided > 0 ? t('table.renter_wealth_calc') : t('table.renter_wealth_calc_norent'),
+                    color: inputs.monthlyRentAvoided > 0 ? 'highlight' : 'yellow'
+                },
+                {
+                    metric: t('table.owner_wealth', {val: inputs.yearsToSell}),
+                    value: results.ownerWealth,
+                    format: 'currency',
+                    calc: t('table.owner_wealth_calc'),
+                    color: 'highlight'
                 },
                 {
                     metric: t('table.buy_vs_invest'),
@@ -450,6 +587,9 @@ export const getRenderData = (inputs: SimulationInput, t: TFunction): { renderDa
                     metric: t('table.fully_repaid_after_years'),
                     value: typeof results.repaymentYears === 'number' ? results.repaymentYears : 0,
                     format: 'number',
+                    displayText: typeof results.repaymentYears === 'number'
+                        ? t('table.years_months', {y: Math.floor(results.repaymentYears), m: Math.round((results.repaymentYears % 1) * 12)})
+                        : t('table.never_repaid'),
                     calc: t('table.fully_repaid_after_years_calc'),
                     color: 'yellow'
                 },
